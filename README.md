@@ -1,33 +1,25 @@
 # Springline — Cadillac, Mat & Wall Unit Pilates
 
-Plain HTML, CSS and JS. No build step, no backend, no login.
+Plain HTML, CSS and JavaScript. No build step, no backend, no login.
 
-## Files
-- `index.html` — app shell, PWA and Apple home-screen tags
-- `styles.css` — all styling (light and dark)
-- `i18n.js` — interface text and tag labels (EN/ES)
-- `figures.js` — animated movement-study illustrations
-- `app.js` — routing, library, filters, favourites, class builder, presentation mode, voice
-- `cadillac.js`, `mat.js`, `wall.js` — the exercises
-- `manifest.webmanifest`, `sw.js` and the icon files — installable app and offline support
+## The files (keep them all in ONE folder)
+- `index.html` — open this to start the app
+- `styles.css` — all the styling
+- `app.js` — all the app code (labels, illustrations, logic)
+- `data.js` — all the content: exercises, prop exercises, ready-made classes, step-by-step guides and glossary
+- `manifest.webmanifest`, `sw.js` and the icon files — make it installable and work offline
+
+If a file is missing or an old copy is mixed in, the app shows a message saying what is wrong instead of a blank page.
+
+## Updating
+Delete the old folder completely and replace it with the new one. Never mix files from different versions.
 
 ## Hosting
-Upload the whole folder to any static host (Vercel, Netlify, GitHub Pages). It must be served over HTTPS for the
-service worker and "Add to Home Screen" to work. Opening `index.html` directly from disk works too, without offline mode.
-After editing any file, change `VERSION` in `sw.js` so installed copies update.
+Upload the whole folder to Vercel, Netlify or any static host (HTTPS needed for offline use and Add to Home Screen).
+After any change, update `VERSION` in `sw.js` so installed copies refresh.
 
-## Adding an exercise
-Copy an existing entry in the matching data file and edit it. Text fields are `['English', 'Spanish']`;
-lists are `[[English items], [Spanish items]]` with the same number of items. Tags (`eq`, `body`, `obj`, `pos`, `mus`)
-must use keys from `i18n.js`. `sec` is the suggested class section; `dur` is minutes; `sup: true` shows the
-supervision warning. A new apparatus file only needs a `<script>` line in `index.html` and an entry in `sw.js`.
+## Editing content
+Everything is in `data.js`, in clearly marked blocks (===== cadillac.js =====, ===== classes.js =====, and so on).
+Text is written as ['English', 'Spanish']. To add a photo to an exercise, add image: 'your-photo.jpg' and put the photo in the same folder.
 
-## Adding real photos or illustrations
-Put the image in an `images/` folder and set `image: 'images/your-file.jpg'` on the exercise.
-It then shows on the card and above the movement study. Use photos you own or have licensed.
-
-## Notes
-- Favourites and class plans are saved in the browser on each device (localStorage).
-- Voice guidance uses the device's built-in text-to-speech; voice quality depends on the device (Safari on iPhone and
-  Chrome on Android have good English and Spanish voices).
-- Spring settings are relative guidance; tensions and attachment heights differ between manufacturers.
+Favourites are saved in the browser on each device. Voice guidance uses the device's built-in voices.

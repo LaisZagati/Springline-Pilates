@@ -1,13 +1,255 @@
+/* Springline — app code: labels, illustrations and app logic. */
+
+/* ===== i18n.js ===== */
+/* Springline — interface text and tag labels. Each entry is [English, Spanish]. */
+window.SL_I18N = {
+  ui: {
+    appName:['Springline — Cadillac, Mat & Wall Unit Pilates','Springline — Cadillac, Mat y Wall Unit Pilates'],
+    tagline:['Cadillac, Mat and Wall Unit repertoire for teaching and practice','Repertorio de Cadillac, Mat y Wall Unit para enseñar y practicar'],
+    home:['Home','Inicio'], library:['Library','Biblioteca'], cadillac:['Cadillac','Cadillac'], mat:['Mat','Mat'], wall:['Wall Unit','Wall Unit'],
+    build:['Build Your Class','Crea tu clase'], buildShort:['Class','Clase'], favs:['Favourites','Favoritos'], favsShort:['Saved','Guardados'],
+    matLong:['Mat Pilates','Mat Pilates'],
+    searchPh:['Search exercises, muscles, equipment…','Busca ejercicios, músculos, equipamiento…'],
+    homeTitle:['Choose your apparatus','Elige tu aparato'],
+    homeLead:['A teaching library of recognised repertoire, with springs, cues and safety notes for every exercise.','Una biblioteca docente de repertorio reconocido, con muelles, indicaciones y seguridad para cada ejercicio.'],
+    exercises:['exercises','ejercicios'], browseAll:['Browse the full library','Ver toda la biblioteca'],
+    cadDesc:['Push-through, roll-down and trapeze work, leg and arm springs.','Push-through, barra roll-down, trapecio y muelles de piernas y brazos.'],
+    matDesc:['Classical and contemporary mat, with ring, ball, band and roller options.','Mat clásico y contemporáneo, con opciones de aro, pelota, banda y rulo.'],
+    wallDesc:['Spring wall work standing, seated, kneeling and lying.','Trabajo en pared de muelles de pie, sentada, de rodillas y tumbada.'],
+    planCta:['Plan a class','Planifica una clase'], planCtaText:['Pick exercises, set reps and timing, then teach from presentation mode.','Elige ejercicios, ajusta repeticiones y tiempos y enseña desde el modo presentación.'],
+    continuePlan:['Open your class','Abre tu clase'],
+    all:['All','Todos'], beginner:['Beginner','Principiante'], intermediate:['Intermediate','Intermedio'], advanced:['Advanced','Avanzado'],
+    filters:['Filters','Filtros'], clear:['Clear all','Borrar todo'], apply:['Show results','Ver resultados'],
+    results:['results','resultados'], noResults:['No exercises match these filters. Clear a filter or try another word.','Ningún ejercicio coincide con estos filtros. Quita un filtro o prueba otra palabra.'],
+    fBody:['Body area','Zona del cuerpo'], fObj:['Movement objective','Objetivo del movimiento'], fEq:['Equipment','Equipamiento'], fPos:['Position','Posición'], fMus:['Muscle group','Grupo muscular'],
+    supervision:['Instructor supervision required','Requiere supervisión de instructor'],
+    supShort:['Supervised','Supervisado'],
+    equipment:['Apparatus and equipment','Aparato y equipamiento'], springs:['Springs and attachment','Muelles y enganches'],
+    springNote:['Spring colours, tensions and attachment heights differ between manufacturers and models. Treat these as relative guidance and follow your equipment manual and training.','Los colores, tensiones y alturas de enganche de los muelles varían entre fabricantes y modelos. Tómalo como orientación relativa y sigue el manual de tu equipo y tu formación.'],
+    start:['Starting position','Posición inicial'], steps:['Execution','Ejecución'], breath:['Breathing','Respiración'], goal:['Movement objective','Objetivo del movimiento'],
+    muscles:['Main muscles','Músculos principales'], cues:['Instructor cues','Indicaciones del instructor'], mist:['Common mistakes','Errores comunes'],
+    mods:['Modifications','Modificaciones'], prog:['Progressions','Progresiones'], safe:['Contraindications and safety','Contraindicaciones y seguridad'], reps:['Repetitions and sets','Repeticiones y series'],
+    level:['Level','Nivel'],
+    addClass:['Add to class','Añadir a la clase'], saved:['Saved','Guardado'], save:['Save','Guardar'],
+    listen:['Listen','Escuchar'], play:['Play','Reproducir'], pause:['Pause','Pausa'], repeat:['Repeat','Repetir'], stop:['Stop','Detener'],
+    audioLang:['Voice','Voz'], noVoice:['This browser has no speech voices. Try Safari or Chrome.','Este navegador no tiene voces. Prueba con Safari o Chrome.'],
+    startPos:['Start','Inicio'], endPos:['Finish','Final'], animate:['Animate','Animar'], still:['Pause animation','Pausar animación'],
+    illusNote:['Schematic movement study. Add your own photo for this exercise in the data file.','Estudio esquemático del movimiento. Añade tu propia foto de este ejercicio en el archivo de datos.'],
+    prev:['Previous','Anterior'], next:['Next','Siguiente'], back:['Back','Volver'],
+    chooseSection:['Add to which part of the class?','¿En qué parte de la clase lo añades?'],
+    added:['Added to your class','Añadido a tu clase'], removed:['Removed','Eliminado'],
+    favAdded:['Saved to favourites','Guardado en favoritos'], favRemoved:['Removed from favourites','Eliminado de favoritos'],
+    favEmpty:['Tap the heart on any exercise to keep it here.','Toca el corazón de cualquier ejercicio para guardarlo aquí.'],
+    planName:['Class name','Nombre de la clase'], newPlan:['New class','Nueva clase'], duplicate:['Duplicate','Duplicar'], deletePlan:['Delete class','Eliminar clase'],
+    confirmDelete:['Delete this class plan? This cannot be undone.','¿Eliminar este plan de clase? No se puede deshacer.'],
+    totalTime:['Estimated duration','Duración estimada'], min:['min','min'], items:['exercises','ejercicios'],
+    addHere:['Add exercise','Añadir ejercicio'], emptySection:['Nothing here yet. Add an exercise or drag one in.','Aún no hay nada. Añade un ejercicio o arrastra uno aquí.'],
+    repsLbl:['Reps','Reps'], durLbl:['Minutes','Minutos'], notesLbl:['Instructor notes','Notas del instructor'], notesPh:['Spring change, focus, client notes…','Cambio de muelle, foco, notas de la clienta…'],
+    moveUp:['Move up','Subir'], moveDown:['Move down','Bajar'], remove:['Remove','Quitar'], drag:['Drag to reorder','Arrastra para reordenar'],
+    present:['Start presentation','Iniciar presentación'], presentEmpty:['Add at least one exercise to present the class.','Añade al menos un ejercicio para presentar la clase.'],
+    exit:['Exit','Salir'], timerStart:['Start timer','Iniciar tiempo'], timerPause:['Pause timer','Pausar tiempo'], timerReset:['Reset','Reiniciar'],
+    breathGuide:['Breath guide','Guía de respiración'], inhale:['Inhale','Inhala'], exhale:['Exhale','Exhala'], speakBreath:['Speak breath cues','Decir la respiración en voz alta'],
+    done:['Class complete','Clase completada'], notes:['Notes','Notas'],
+    untitled:['My class','Mi clase'], close:['Close','Cerrar'], pick:['Add','Añadir'],
+    install:['Add Springline to your home screen from the browser menu for a full-screen app.','Añade Springline a tu pantalla de inicio desde el menú del navegador para usarla como app.'],
+    safety:['This library supports trained instructors and supervised students. It does not replace qualified instruction or medical advice.','Esta biblioteca apoya a instructores formados y alumnos supervisados. No sustituye la enseñanza cualificada ni el consejo médico.'],
+    classical:['Classical','Clásico'], contemporary:['Contemporary','Contemporáneo'],
+    language:['Language','Idioma'], of:['of','de'],
+    propsTitle:['Train with props','Entrena con material'], propsLead:['Exercises that use or adapt with each prop.','Ejercicios que usan cada material o se adaptan con él.'],
+    propOptions:['Prop options','Opciones con material'], props:['Props','Material'],
+    classes:['Classes','Clases'], classesShort:['Classes','Clases'], classesWord:['ready-made classes','clases listas'],
+    classesLead:['Ready-made classes with sections, reps and timings already set. Open one and teach it in presentation mode.','Clases listas con secciones, repeticiones y tiempos ya definidos. Abre una y enséñala en modo presentación.'],
+    readyCta:['Teach a ready-made class','Enseña una clase lista'], readyCtaText:['Open one and follow it exercise by exercise.','Ábrela y síguela ejercicio a ejercicio.'],
+    fSec:['Part of the class','Parte de la clase'], partOfClass:['Part of the class','Parte de la clase'], mainUse:['main use','uso principal'],
+    stepByStep:['Step by step','Paso a paso'], getReady:['Get into position','Colócate en posición'], doMove:['Do the movement','Haz el movimiento'], finishSafe:['Finish safely','Termina con seguridad'],
+    quickSummary:['Quick summary for instructors','Resumen rápido para instructores'],
+    glossary:['Pilates words explained','Palabras de Pilates explicadas'], glossaryShort:['Plain meanings of the terms used in the steps.','El significado sencillo de los términos usados en los pasos.'],
+    glossaryLead:['Simple explanations of the words you will see in the exercise steps.','Explicaciones sencillas de las palabras que verás en los pasos de los ejercicios.'],
+    startClass:['Start class','Empezar clase'], youNeed:['You will need','Necesitarás'], inClasses:['Used in these classes','Incluido en estas clases'],
+    ringDesc:['Also called the magic circle. Adds resistance, connection to the inner thighs and arm work.','También llamado círculo mágico. Añade resistencia, conexión de aductores y trabajo de brazos.'],
+    ballDesc:['A soft mini ball, 20–25 cm, slightly deflated. Supports, squeezes and adds gentle instability.','Una mini pelota blanda de 20–25 cm, algo desinflada. Apoya, se aprieta y añade una inestabilidad suave.'],
+    bigballDesc:['A stability ball, 55–75 cm. Choose a size where the hips sit level with or above the knees.','Una fitball de 55–75 cm. Elige un tamaño con la cadera a la altura de las rodillas o algo por encima.'],
+    smallballDesc:['A palm-size ball, 8–12 cm, for release work, foot mobility and guided ranges.','Una pelota del tamaño de la palma, de 8–12 cm, para liberación, movilidad del pie y rangos guiados.']
+  },
+  sections: {
+    warmup:['Warm-up','Calentamiento'], mobility:['Mobility','Movilidad'], main:['Main workout','Bloque principal'],
+    strength:['Strength and control','Fuerza y control'], stretch:['Stretching','Estiramientos'], cooldown:['Cool-down','Vuelta a la calma']
+  },
+  app: { cadillac:['Cadillac','Cadillac'], mat:['Mat','Mat'], wall:['Wall Unit','Wall Unit'] },
+  body: { core:['Core','Core'], spine:['Spine','Columna'], hips:['Hips','Cadera'], glutes:['Glutes','Glúteos'], legs:['Legs','Piernas'], shoulders:['Shoulders','Hombros'], arms:['Arms','Brazos'], full:['Full body','Cuerpo completo'] },
+  obj: { strength:['Strength','Fuerza'], mobility:['Mobility','Movilidad'], stability:['Stability','Estabilidad'], flex:['Flexibility','Flexibilidad'], balance:['Balance','Equilibrio'], coord:['Coordination','Coordinación'], control:['Control','Control'], breath:['Breathing','Respiración'] },
+  pos: { supine:['Supine','Supino'], prone:['Prone','Prono'], seated:['Seated','Sentada'], kneeling:['Kneeling','De rodillas'], standing:['Standing','De pie'], side:['Side-lying','Decúbito lateral'], quadruped:['All fours','Cuadrupedia'], inverted:['Inverted','Invertida'] },
+  eq: {
+    pushbar:['Push-through bar','Barra push-through'], ptspring:['Push-through spring','Muelle push-through'], rollbar:['Roll-down / roll-back bar','Barra roll-down / roll-back'],
+    trapeze:['Trapeze bar','Trapecio'], legsprings:['Leg springs','Muelles de piernas'], armsprings:['Arm springs','Muelles de brazos'], fuzzies:['Fuzzy loops','Cinchas acolchadas'],
+    strap:['Safety strap','Correa de seguridad'], mat:['Mat','Colchoneta'], ring:['Pilates ring','Aro de Pilates'], ball:['Pilates ball (soft, 20–25 cm)','Pelota de Pilates (blanda, 20–25 cm)'],
+    bigball:['Big ball (stability ball)','Pelota grande (fitball)'], smallball:['Small ball (palm-size)','Pelota pequeña (tamaño palma)'], band:['Resistance band','Banda elástica'], roller:['Foam roller','Rulo de espuma'], noequip:['No equipment','Sin material']
+  },
+  mus: {
+    abs:['Rectus abdominis','Recto abdominal'], tva:['Transversus abdominis','Transverso abdominal'], obl:['Obliques','Oblicuos'], ers:['Spinal extensors','Extensores de la columna'],
+    glu:['Gluteus maximus','Glúteo mayor'], abd:['Gluteus medius / hip abductors','Glúteo medio / abductores'], ham:['Hamstrings','Isquiotibiales'], quad:['Quadriceps','Cuádriceps'],
+    add:['Adductors','Aductores'], hipf:['Hip flexors','Flexores de cadera'], lat:['Latissimus dorsi','Dorsal ancho'], pec:['Pectorals','Pectorales'],
+    delt:['Deltoids','Deltoides'], tri:['Triceps','Tríceps'], bic:['Biceps','Bíceps'], ser:['Serratus anterior','Serrato anterior'], rhom:['Rhomboids and mid trapezius','Romboides y trapecio medio'], calf:['Calves','Gemelos']
+  }
+};
+
+/* ===== figures.js ===== */
+/* Springline — schematic movement studies.
+   A pose is 13 numbers: [hipX, hipY, lumbar, thoracic, head, thighNear, shinNear, thighFar, shinFar, upperArmNear, forearmNear, upperArmFar, forearmFar]
+   Angles are absolute degrees: 0 = right, 90 = up, 180 = left, 270 = down. Poses are drawn in a 320x200 frame where the floor is y = 176.
+   fig = { st: stage, a: start pose, b: finish pose, f: 1 to mirror, pr: props } */
+window.SLFig = (function () {
+  const LEN = { t1: 28, t2: 28, hd: 17, th: 42, sh: 40, ua: 30, fa: 28 };
+  const STAGE_DY = { mat: 0, table: -36, cadFloor: 6, wall: 0 };
+  const ANCHORS = {
+    table: { topL:[40,14], topR:[280,14], topC:[110,14], upL:[40,44], upR:[280,44], midL:[40,92], midR:[280,92], ptPivot:[280,100], botR:[280,140] },
+    cadFloor: { topL:[40,14], topR:[280,14], topC:[110,14], upL:[40,44], upR:[280,44], midL:[40,92], midR:[280,92], ptPivot:[280,100], botR:[280,140] },
+    wall: { w1:[288,24], w2:[288,56], w3:[288,88], w4:[288,120], w5:[288,152], wPivot:[288,108] },
+    mat: {}
+  };
+  const rad = a => a * Math.PI / 180;
+  const step = (p, a, l) => [p[0] + l * Math.cos(rad(a)), p[1] - l * Math.sin(rad(a))];
+
+  function solve(q, flip, dy) {
+    const [hx, hy, t1, t2, hd, thL, shL, thR, shR, aL, fL, aR, fR] = q;
+    const H = [hx, hy], W = step(H, t1, LEN.t1), S = step(W, t2, LEN.t2), Hd = step(S, hd, LEN.hd);
+    const kL = step(H, thL, LEN.th), ftL = step(kL, shL, LEN.sh), kR = step(H, thR, LEN.th), ftR = step(kR, shR, LEN.sh);
+    const eL = step(S, aL, LEN.ua), hL = step(eL, fL, LEN.fa), eR = step(S, aR, LEN.ua), hR = step(eR, fR, LEN.fa);
+    const pts = { H, W, S, Hd, kL, fL: ftL, kR, fR: ftR, eL, hL, eR, hR };
+    for (const k in pts) { const p = pts[k]; pts[k] = [flip ? 320 - p[0] : p[0], p[1] + dy]; }
+    return pts;
+  }
+  function lerpAngle(a, b, t) { let d = ((b - a + 540) % 360) - 180; return a + d * t; }
+  function poseAt(fig, t) {
+    if (t <= 0) return fig.a; if (t >= 1) return fig.b;
+    return fig.a.map((v, i) => i < 2 ? v + (fig.b[i] - v) * t : lerpAngle(v, fig.b[i], t));
+  }
+  const f1 = n => Math.round(n * 10) / 10;
+  const pl = (...ps) => 'M' + ps.map(p => f1(p[0]) + ' ' + f1(p[1])).join(' L');
+
+  function spring(a, b) {
+    const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len, uy = dy / len, nx = -uy, ny = ux, lead = Math.min(10, len * 0.15), coils = Math.max(6, Math.round(len / 9));
+    let d = `M${f1(a[0])} ${f1(a[1])} L${f1(a[0] + ux * lead)} ${f1(a[1] + uy * lead)}`;
+    const span = len - lead * 2;
+    for (let i = 1; i <= coils; i++) {
+      const s = lead + span * (i - 0.5) / coils, side = i % 2 ? 3.6 : -3.6;
+      d += ` L${f1(a[0] + ux * s + nx * side)} ${f1(a[1] + uy * s + ny * side)}`;
+    }
+    d += ` L${f1(b[0] - ux * lead)} ${f1(b[1] - uy * lead)} L${f1(b[0])} ${f1(b[1])}`;
+    return `<path class="sl-spring" d="${d}"/>`;
+  }
+
+  function stage(st) {
+    if (st === 'table' || st === 'cadFloor') {
+      return `<g class="sl-app">
+        <line class="sl-floor" x1="8" y1="186" x2="312" y2="186"/>
+        <rect class="sl-leg" x="50" y="146" width="7" height="40" rx="2"/><rect class="sl-leg" x="263" y="146" width="7" height="40" rx="2"/>
+        <rect class="sl-frame" x="38" y="12" width="4" height="138"/><rect class="sl-frame" x="278" y="12" width="4" height="138"/>
+        <rect class="sl-frame" x="38" y="12" width="244" height="4" rx="2"/>
+        <rect class="sl-table" x="40" y="136" width="240" height="11" rx="4"/>
+        <circle class="sl-eye" cx="40" cy="44" r="3"/><circle class="sl-eye" cx="280" cy="44" r="3"/><circle class="sl-eye" cx="40" cy="92" r="3"/><circle class="sl-eye" cx="280" cy="92" r="3"/>
+      </g>`;
+    }
+    if (st === 'wall') {
+      return `<g class="sl-app">
+        <line class="sl-floor" x1="8" y1="182" x2="312" y2="182"/>
+        <rect class="sl-wall" x="288" y="4" width="16" height="178" rx="3"/>
+        ${[24,56,88,120,152].map(y => `<circle class="sl-eye" cx="288" cy="${y}" r="3.2"/>`).join('')}
+        <rect class="sl-mat" x="34" y="176" width="236" height="6" rx="3"/>
+      </g>`;
+    }
+    return `<g class="sl-app"><line class="sl-floor" x1="8" y1="182" x2="312" y2="182"/><rect class="sl-mat" x="44" y="176" width="248" height="6" rx="3"/></g>`;
+  }
+
+  function resolve(ref, pts, st) {
+    if (Array.isArray(ref)) return ref;
+    if (typeof ref === 'string' && ref.includes('+')) { const [a, b] = ref.split('+').map(r => resolve(r, pts, st)); return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]; }
+    if (pts[ref]) return pts[ref];
+    return (ANCHORS[st] || {})[ref] || [160, 20];
+  }
+
+  function body(fig, t) {
+    const st = fig.st || 'mat';
+    const p = solve(poseAt(fig, t), !!fig.f, STAGE_DY[st] || 0);
+    let props = '', under = '';
+    (fig.pr || []).forEach(pr => {
+      const [type, a, b] = pr;
+      if (type === 'spring') props += spring(resolve(b, p, st), resolve(a, p, st));
+      else if (type === 'rod') { const A = resolve(a, p, st), B = resolve(b, p, st); props += `<path class="sl-rod" d="${pl(A, B)}"/>`; }
+      else if (type === 'bar') { const A = resolve(a, p, st); props += `<circle class="sl-bar" cx="${f1(A[0])}" cy="${f1(A[1])}" r="5"/>`; }
+      else if (type === 'loop') { const A = resolve(a, p, st); props += `<ellipse class="sl-loop" cx="${f1(A[0])}" cy="${f1(A[1])}" rx="6" ry="4"/>`; }
+      else if (type === 'ring' || type === 'ball' || type === 'bigball' || type === 'sball') {
+        const A = resolve(a, p, st), o = Array.isArray(b) ? b : [0, 0], r = { ring: 13, ball: 11, bigball: 30, sball: 5.5 }[type];
+        const c = `<circle class="sl-${type}" cx="${f1(A[0] + o[0])}" cy="${f1(A[1] + o[1])}" r="${r}"/>`;
+        if (type === 'bigball') under += c; else props += c;
+      }
+      else if (type === 'band') { const A = resolve(a, p, st), B = resolve(b, p, st); props += `<path class="sl-band" d="${pl(A, B)}"/>`; }
+      else if (type === 'roller') { const A = resolve(a, p, st); props += `<circle class="sl-roller" cx="${A[0]}" cy="${A[1]}" r="8"/>`; }
+    });
+    return `${under}<g class="sl-figure">
+      <path class="sl-limb far" d="${pl(p.H, p.kR, p.fR)}"/>
+      <path class="sl-limb far" d="${pl(p.S, p.eR, p.hR)}"/>
+      ${props}
+      <path class="sl-torso" d="${pl(p.H, p.W, p.S)}"/>
+      <path class="sl-neck" d="${pl(p.S, p.Hd)}"/>
+      <circle class="sl-head" cx="${f1(p.Hd[0])}" cy="${f1(p.Hd[1])}" r="10.5"/>
+      <path class="sl-limb near" d="${pl(p.H, p.kL, p.fL)}"/>
+      <path class="sl-limb near" d="${pl(p.S, p.eL, p.hL)}"/>
+    </g>`;
+  }
+
+  function svg(fig, t = 1, label = '') {
+    return `<svg class="sl-svg" viewBox="0 0 320 200" role="img" aria-label="${label}" focusable="false">${stage(fig.st)}<g class="sl-dyn">${body(fig, t)}</g></svg>`;
+  }
+
+  const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Animated player bound to a container element */
+  function Player(el, fig, label) {
+    el.innerHTML = svg(fig, 0, label);
+    const dyn = el.querySelector('.sl-dyn');
+    let t = 0, raf = 0, running = false, start = 0;
+    const MOVE = 2300, HOLD = 700, CYCLE = (MOVE + HOLD) * 2;
+    function draw(v) { t = v; dyn.innerHTML = body(fig, v); }
+    function frame(now) {
+      if (!el.isConnected) { running = false; return; }
+      const c = (now - start) % CYCLE;
+      let v;
+      if (c < MOVE) v = ease(c / MOVE); else if (c < MOVE + HOLD) v = 1;
+      else if (c < MOVE * 2 + HOLD) v = 1 - ease((c - MOVE - HOLD) / MOVE); else v = 0;
+      draw(v);
+      raf = requestAnimationFrame(frame);
+    }
+    const api = {
+      play() { if (running) return; running = true; start = performance.now() - (t * MOVE); raf = requestAnimationFrame(frame); api.onchange && api.onchange(); },
+      pause() { running = false; cancelAnimationFrame(raf); api.onchange && api.onchange(); },
+      set(v) { api.pause(); draw(v); },
+      get running() { return running; },
+      onchange: null
+    };
+    if (!reduced()) api.play(); else draw(1);
+    return api;
+  }
+
+  return { svg, Player };
+})();
+
+/* ===== app.js ===== */
 /* Springline — app logic (no build step, no backend). */
 (function () {
   'use strict';
   const I = window.SL_I18N, EX = window.SPRINGLINE || [], Fig = window.SLFig;
   const byId = Object.fromEntries(EX.map(e => [e.id, e]));
+  const GUIDES = window.SPRINGLINE_GUIDES || {}, GLOSSARY = window.SPRINGLINE_GLOSSARY || [];
+  I.sec = I.sections;
   const LEVELS = ['beginner', 'intermediate', 'advanced'];
   const APPS = ['cadillac', 'mat', 'wall'];
+  const PROPS = ['ring', 'ball', 'bigball', 'smallball'];
   const SECTIONS = ['warmup', 'mobility', 'main', 'strength', 'stretch', 'cooldown'];
-  const FACETS = [['body', 'fBody'], ['obj', 'fObj'], ['eq', 'fEq'], ['pos', 'fPos'], ['mus', 'fMus']];
-  const FIELD = { body: 'body', obj: 'obj', eq: 'eq', pos: 'pos', mus: 'mus' };
+  const FACETS = [['sec', 'fSec'], ['body', 'fBody'], ['obj', 'fObj'], ['eq', 'fEq'], ['pos', 'fPos'], ['mus', 'fMus']];
+  const FIELD = { sec: 'secs', body: 'body', obj: 'obj', eq: 'eq', pos: 'pos', mus: 'mus' };
 
   /* ——— Storage ——— */
   const store = {
@@ -19,15 +261,13 @@
   const S = {
     lang: store.get('lang', 'en'),
     favs: new Set(store.get('favs', [])),
-    plans: store.get('plans', null),
-    active: store.get('active', null),
-    q: '', lvl: 'all', f: { body: [], obj: [], eq: [], pos: [], mus: [] },
-    lastList: [], filterApp: null
+    clsCat: 'all', clsLvl: 'all',
+    q: '', lvl: 'all', f: { sec: [], body: [], obj: [], eq: [], pos: [], mus: [] },
+    lastList: [], filterApp: null, filterProp: null
   };
-  if (!Array.isArray(S.plans) || !S.plans.length) { S.plans = [{ id: uid(), name: '', items: [] }]; }
-  if (!S.plans.find(p => p.id === S.active)) S.active = S.plans[0].id;
-  const savePlans = () => { store.set('plans', S.plans); store.set('active', S.active); };
-  const plan = () => S.plans.find(p => p.id === S.active);
+  const CLASSES = window.SPRINGLINE_CLASSES || [];
+  const clsById = Object.fromEntries(CLASSES.map(c => [c.id, c]));
+  const CLASS_CATS = ['cadillac', 'mat', 'wall', 'props'];
 
   /* ——— Language helpers ——— */
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -38,13 +278,12 @@
   const uiB = k => bi(I.ui[k]);
   const lab = (g, k) => (I[g] && I[g][k]) ? tx(I[g][k]) : k;
   const labB = (g, k) => (I[g] && I[g][k]) ? bi(I[g][k]) : k;
-  function list(pair, ordered) {
+  function list(pair, ordered, start) {
     if (!pair) return '';
-    const tag = ordered ? 'ol' : 'ul';
-    if (S.lang === 'both' && pair[0].join() !== pair[1].join()) return `<${tag}>${pair[0].map((en, i) => `<li><span class="t-en">${en}</span><span class="t-es" lang="es">${pair[1][i] || ''}</span></li>`).join('')}</${tag}>`;
-    return `<${tag}>${pair[idx()].map(x => `<li>${x}</li>`).join('')}</${tag}>`;
+    const tag = ordered ? (start > 1 ? `ol start="${start}"` : 'ol') : 'ul';
+    if (S.lang === 'both' && pair[0].join() !== pair[1].join()) return `<${tag}>${pair[0].map((en, i) => `<li><span class="t-en">${en}</span><span class="t-es" lang="es">${pair[1][i] || ''}</span></li>`).join('')}</${ordered ? 'ol' : 'ul'}>`;
+    return `<${tag}>${pair[idx()].map(x => `<li>${x}</li>`).join('')}</${ordered ? 'ol' : 'ul'}>`;
   }
-  const planName = p => p.name || ui('untitled');
 
   /* ——— Icons ——— */
   const ico = {
@@ -78,10 +317,15 @@
     const parts = [...e.name, I.app[e.app].join(' '), I.ui[e.lvl].join(' '), e.style || ''];
     ['body', 'obj', 'eq', 'pos', 'mus'].forEach(g => (e[g] || []).forEach(k => I[g][k] && parts.push(I[g][k].join(' '))));
     parts.push(e.goal.join(' '));
+    (e.props || []).forEach(([k, how]) => parts.push(how.join(' ')));
+    /* class parts: the main use first, then every part it is used for in the ready-made classes */
+    e.secs = [...new Set([e.sec, ...CLASSES.flatMap(c => c.items.filter(it => it[0] === e.id).map(it => it[1]))])].sort((x, y) => x === e.sec ? -1 : y === e.sec ? 1 : SECTIONS.indexOf(x) - SECTIONS.indexOf(y));
+    e.secs.forEach(s => parts.push(I.sections[s].join(' ')));
     INDEX[e.id] = norm(parts.join(' | '));
   });
-  function matches(e, app) {
+  function matches(e, app, prop) {
     if (app && e.app !== app) return false;
+    if (prop && !(e.eq || []).includes(prop)) return false;
     if (S.lvl !== 'all' && e.lvl !== S.lvl) return false;
     for (const [g] of FACETS) { const sel = S.f[g]; if (sel.length && !sel.some(k => (e[FIELD[g]] || []).includes(k))) return false; }
     const q = norm(S.q.trim());
@@ -136,8 +380,10 @@
 
   function script(e, lng) {
     const k = lng === 'es' ? 1 : 0, U = n => I.ui[n][k];
-    const out = [e.name[k] + '.', U('start') + '. ' + e.start[k]];
-    e.steps[k].forEach(s => out.push(s));
+    const out = [e.name[k] + '.'];
+    const g = GUIDES[e.id];
+    if (g) { [['ready', 'getReady'], ['move', 'doMove'], ['finish', 'finishSafe']].forEach(([p, l]) => { out.push(U(l) + '.'); g[p][k].forEach(s => out.push(s)); }); }
+    else { out.push(U('start') + '. ' + e.start[k]); e.steps[k].forEach(s => out.push(s)); }
     out.push(U('breath') + '. ' + e.breath[k]);
     e.cues[k].forEach(c => out.push(c));
     out.push(e.reps[k] + '.');
@@ -177,10 +423,24 @@
   const supPill = e => e.sup ? `<span class="pill sup">${svgI('eye')}${ui('supShort')}</span>` : '';
   const thumb = e => e.image ? `<img src="${esc(e.image)}" alt="" loading="lazy">` : Fig.svg(e.fig, 1, '');
   const favBtn = e => `<button class="fav" data-fav="${e.id}" aria-pressed="${S.favs.has(e.id)}" aria-label="${ui('favs')}">${svgI('heart')}</button>`;
+
+  function guideHTML(e) {
+    const g = GUIDES[e.id]; if (!g) return '';
+    let n = 1;
+    return [['ready', 'getReady'], ['move', 'doMove'], ['finish', 'finishSafe']].map(([k, label]) => {
+      if (!g[k]) return '';
+      const html = `<h3 class="g-part">${uiB(label)}</h3>${list(g[k], true, n)}`;
+      n += g[k][0].length; return html;
+    }).join('') + `<p class="g-help"><a href="#/glossary">${ui('glossary')}</a></p>`;
+  }
+  const partPill = s => `<span class="pill part part-${s}">${lab('sec', s)}</span>`;
+  function partsHTML(e) {
+    return `<div class="parts"><strong>${uiB('partOfClass')}</strong><div class="tag-list">${e.secs.map((s, i) => `<span class="tag part-tag part-${s}">${labB('sec', s)}${i === 0 ? ` <em>${ui('mainUse')}</em>` : ''}</span>`).join('')}</div></div>`;
+  }
   function card(e, showApp) {
     return `<article class="ex-card">
       <div class="thumb">${thumb(e)}</div>
-      <div><h3>${bi(e.name)}</h3><div class="meta">${lvlPill(e.lvl)}${showApp ? `<span class="pill">${lab('app', e.app)}</span>` : ''}${e.style ? `<span class="pill">${ui(e.style)}</span>` : ''}${supPill(e)}</div></div>
+      <div><h3>${bi(e.name)}</h3><div class="meta">${partPill(e.sec)}${lvlPill(e.lvl)}${showApp ? `<span class="pill">${lab('app', e.app)}</span>` : ''}${e.style ? `<span class="pill">${ui(e.style)}</span>` : ''}${supPill(e)}</div></div>
       <a class="cover" href="#/ex/${e.id}" aria-label="${esc(tx(e.name))}"></a>
       ${favBtn(e)}
     </article>`;
@@ -197,7 +457,6 @@
 
   /* ——— Views ——— */
   function viewHome() {
-    const p = plan(), n = p.items.length;
     const sig = { cadillac: 'cad-sitting-forward', mat: 'mat-teaser', wall: 'wall-chest-expansion' };
     const desc = { cadillac: 'cadDesc', mat: 'matDesc', wall: 'wallDesc' };
     const plates = APPS.map(a => {
@@ -215,8 +474,11 @@
       </section>
       <h2 class="sec-title">${uiB('homeTitle')}</h2>
       <div class="apps">${plates}</div>
+      <h2 class="sec-title">${uiB('propsTitle')}</h2>
+      <div class="props-grid">${PROPS.map(k => `<a class="prop-tile" href="#/props/${k}"><i class="prop-dot dot-${k}" aria-hidden="true"></i><strong>${labB('eq', k)}</strong><span class="n">${EX.filter(e => e.eq.includes(k)).length} ${ui('exercises')}</span></a>`).join('')}</div>
       <a class="row-link" href="#/library"><span><strong>${uiB('browseAll')}</strong><span class="muted"> ${EX.length} ${ui('exercises')}</span></span>${svgI('fwd')}</a>
-      <a class="row-link plan-cta" href="#/build"><span><strong>${n ? esc(planName(p)) : uiB('planCta')}</strong><span class="muted">${n ? `${n} ${ui('items')}, ${fmtMin(total(p))}` : uiB('planCtaText')}</span></span>${svgI('fwd')}</a>
+      <a class="row-link plan-cta" href="#/classes"><span><strong>${uiB('readyCta')}</strong><span class="muted">${CLASSES.length} ${ui('classesWord')}. ${uiB('readyCtaText')}</span></span>${svgI('fwd')}</a>
+      <a class="row-link" href="#/glossary"><span><strong>${uiB('glossary')}</strong><span class="muted"> ${uiB('glossaryShort')}</span></span>${svgI('fwd')}</a>
       <p class="fine">${uiB('safety')}</p>
       <p class="fine install-hint">${uiB('install')}</p>`;
   }
@@ -224,17 +486,19 @@
     $('#homeSearch').onsubmit = ev => { ev.preventDefault(); S.q = ev.target.q.value; location.hash = '#/library'; };
   }
 
-  function viewLibrary(app) {
-    S.filterApp = app;
-    const title = app ? (app === 'mat' ? uiB('matLong') : labB('app', app)) : uiB('library');
-    const desc = app ? uiB({ cadillac: 'cadDesc', mat: 'matDesc', wall: 'wallDesc' }[app]) : uiB('homeLead');
+  function viewLibrary(app, prop) {
+    S.filterApp = app; S.filterProp = prop || null;
+    const title = prop ? labB('eq', prop) : app ? (app === 'mat' ? uiB('matLong') : labB('app', app)) : uiB('library');
+    const desc = prop ? uiB(prop + 'Desc') : app ? uiB({ cadillac: 'cadDesc', mat: 'matDesc', wall: 'wallDesc' }[app]) : uiB('homeLead');
     const appChips = [['library', null], ...APPS.map(a => [a, a])].map(([k, a]) =>
-      `<a class="chip" href="#/${k}" ${app === a ? 'aria-current="page"' : ''}>${a ? lab('app', a) : ui('all')}</a>`).join('');
+      `<a class="chip" href="#/${k}" ${app === a && !prop ? 'aria-current="page"' : ''}>${a ? lab('app', a) : ui('all')}</a>`).join('');
+    const propChips = PROPS.map(k => `<a class="chip" href="#/props/${k}" ${prop === k ? 'aria-current="page"' : ''}>${lab('eq', k)}</a>`).join('');
     const seg = ['all', ...LEVELS].map(l => `<button data-lvl="${l}" aria-pressed="${S.lvl === l}">${ui(l)}</button>`).join('');
     return `<header class="page-head"><h1>${title}</h1><p>${desc}</p></header>
       <div class="toolbar">
         <div class="search" role="search">${svgI('search')}<input id="libSearch" type="search" value="${esc(S.q)}" placeholder="${ui('searchPh')}" aria-label="${ui('searchPh')}" enterkeyhint="search"></div>
         <nav class="chips" aria-label="${ui('library')}">${appChips}</nav>
+        <nav class="chips" aria-label="${ui('props')}">${propChips}</nav>
         <div class="toolbar-row"><div class="seg" role="group" aria-label="${ui('level')}">${seg}</div>
           <button class="filter-btn" id="openFilters">${svgI('filter')}${ui('filters')}${facetCount() ? `<span class="badge-n">${facetCount()}</span>` : ''}</button></div>
         <div class="chips" id="activeFilters"></div>
@@ -242,8 +506,8 @@
       <div id="results"></div>`;
   }
   function renderResults() {
-    const app = S.filterApp;
-    const res = EX.filter(e => matches(e, app));
+    const app = S.filterApp, prop = S.filterProp;
+    const res = EX.filter(e => matches(e, app, prop));
     S.lastList = res.map(e => e.id);
     const af = $('#activeFilters');
     if (af) af.innerHTML = FACETS.flatMap(([g]) => S.f[g].map(k => `<button class="chip" data-unf="${g}:${k}" aria-label="${ui('remove')} ${esc(lab(g, k))}">${lab(g, k)} <span class="x" aria-hidden="true">×</span></button>`)).join('');
@@ -269,9 +533,9 @@
   }
   function updateFilterBadge() { const b = $('#openFilters'); if (b) b.innerHTML = `${svgI('filter')}${ui('filters')}${facetCount() ? `<span class="badge-n">${facetCount()}</span>` : ''}`; }
   function openFilters() {
-    const app = S.filterApp, pool = EX.filter(e => !app || e.app === app);
+    const app = S.filterApp, prop = S.filterProp, pool = EX.filter(e => (!app || e.app === app) && (!prop || e.eq.includes(prop)));
     const draft = JSON.parse(JSON.stringify(S.f));
-    const count = () => { const keep = S.f; S.f = draft; const n = pool.filter(e => matches(e, app)).length; S.f = keep; return n; };
+    const count = () => { const keep = S.f; S.f = draft; const n = pool.filter(e => matches(e, app, prop)).length; S.f = keep; return n; };
     const body = FACETS.map(([g, key]) => {
       const keys = Object.keys(I[g]).filter(k => pool.some(e => (e[FIELD[g]] || []).includes(k)));
       return `<div class="facet"><h3>${ui(key)}</h3><div class="wrap">${keys.map(k => `<button class="chip" data-f="${g}:${k}" aria-pressed="${draft[g].includes(k)}">${lab(g, k)}</button>`).join('')}</div></div>`;
@@ -318,10 +582,10 @@
         <div class="title-block">
           <h1>${bi(e.name)}</h1>
           <div class="meta"><span class="pill">${lab('app', e.app)}</span>${lvlPill(e.lvl)}${e.style ? `<span class="pill">${ui(e.style)}</span>` : ''}${e.pos.map(k => `<span class="pill">${lab('pos', k)}</span>`).join('')}</div>
+          ${partsHTML(e)}
           ${e.sup ? `<div class="sup-banner" role="note">${svgI('eye')}<span>${uiB('supervision')}</span></div>` : ''}
           <div class="actions">
             ${favBtn(e)}
-            <button class="btn primary" id="addBtn">${svgI('plus')}${ui('addClass')}</button>
             <button class="btn soft" id="listenBtn">${svgI('speaker')}${ui('listen')}</button>
           </div>
           <div class="audio" id="audio" hidden>
@@ -336,10 +600,12 @@
           </div>
         </div>
         <div class="info" style="margin-top:16px">
-          ${sec('equipment', tagRow('eq', e.eq) + (e.spr ? `<h2 style="margin-top:14px">${uiB('springs')}</h2>${p(e.spr)}<p class="spring-note">${bi(I.ui.springNote)}</p>` : ''))}
-          ${sec('start', p(e.start))}
-          ${sec('steps', list(e.steps, true))}
+          ${GUIDES[e.id] ? sec('stepByStep', guideHTML(e)) : ''}
           ${sec('breath', p(e.breath))}
+          ${sec('equipment', tagRow('eq', e.eq) + (e.spr ? `<h2 style="margin-top:14px">${uiB('springs')}</h2>${p(e.spr)}<p class="spring-note">${bi(I.ui.springNote)}</p>` : ''))}
+          ${e.props && e.props.length ? sec('propOptions', `<div class="prop-list">${e.props.map(([k, how]) => `<div class="prop-row"><div><a class="tag" href="#/props/${k}" style="text-decoration:none">${labB('eq', k)}</a></div>${p(how)}</div>`).join('')}</div>`) : ''}
+          ${GUIDES[e.id] ? '' : sec('start', p(e.start))}
+          ${sec(GUIDES[e.id] ? 'quickSummary' : 'steps', list(e.steps, true))}
           ${sec('goal', p(e.goal) + `<div style="margin-top:10px">${tagRow('obj', e.obj)}</div>`)}
           ${sec('muscles', tagRow('mus', e.mus))}
           ${sec('cues', list(e.cues))}
@@ -348,6 +614,7 @@
           ${sec('prog', list(e.prog))}
           ${sec('safe', list(e.safe))}
           ${sec('reps', p(e.reps))}
+          ${(() => { const cs = CLASSES.filter(c => c.items.some(it => it[0] === e.id)); return cs.length ? sec('inClasses', `<div class="tag-list">${cs.map(c => `<a class="tag" style="text-decoration:none" href="#/class/${c.id}">${tx(c.title)}</a>`).join('')}</div>`) : ''; })()}
         </div>
         <nav class="pager">
           ${prev ? `<a href="#/ex/${prev.id}"><span>${ui('prev')}</span>${tx(prev.name)}</a>` : '<span></span>'}
@@ -369,7 +636,6 @@
       sync();
     });
     sync();
-    $('#addBtn').onclick = () => addToClassSheet(e);
     let vl = voiceLang();
     const audio = $('#audio');
     const refresh = () => {
@@ -387,185 +653,89 @@
     refresh();
   }
 
-  function addToClassSheet(e) {
-    const p = plan();
-    const body = `<p class="muted" style="margin:0 0 12px">${esc(planName(p))}</p><div class="sec-choice">${SECTIONS.map(s =>
-      `<button data-sec="${s}" class="${s === e.sec ? 'suggested' : ''}"><span>${bi(I.sections[s])}</span><small>${p.items.filter(it => it.sec === s).length}</small></button>`).join('')}</div>`;
-    openSheet(ui('chooseSection'), body, '', sh => {
-      sh.addEventListener('click', ev => { const b = ev.target.closest('[data-sec]'); if (!b) return; addItem(e.id, b.dataset.sec); closeSheet(); toast(ui('added')); });
-    });
-  }
-  function addItem(exId, sec) {
-    const e = byId[exId], p = plan();
-    p.items.push({ uid: uid(), ex: exId, sec, reps: e.reps[S.lang === 'es' ? 1 : 0], dur: e.dur, notes: '' });
-    savePlans();
-  }
-
-  /* ——— Builder ——— */
-  const total = p => p.items.reduce((n, it) => n + (parseFloat(it.dur) || 0), 0);
+  /* ——— Ready-made classes ——— */
   const fmtMin = m => `${Math.round(m * 10) / 10} ${ui('min')}`;
-  function itemHTML(it) {
-    const e = byId[it.ex]; if (!e) return '';
-    return `<div class="plan-item" data-uid="${it.uid}">
-      <button class="drag-handle" aria-label="${ui('drag')}">${svgI('grip')}</button>
-      <div class="thumb">${thumb(e)}</div>
-      <div class="pi-main">
-        <h3><a href="#/ex/${e.id}">${bi(e.name)}</a></h3>
-        <div class="meta"><span class="pill">${lab('app', e.app)}</span>${lvlPill(e.lvl)}${supPill(e)}</div>
-        <div class="pi-fields">
-          <label>${ui('repsLbl')}<input class="field" data-k="reps" value="${esc(it.reps)}"></label>
-          <label>${ui('durLbl')}<input class="field" data-k="dur" type="number" inputmode="decimal" min="0" max="60" step="0.5" value="${esc(it.dur)}"></label>
-          <label class="pi-notes">${ui('notesLbl')}<textarea class="field" data-k="notes" rows="2" placeholder="${ui('notesPh')}">${esc(it.notes)}</textarea></label>
-        </div>
-        <div class="pi-tools">
-          <button class="mini" data-act="up" aria-label="${ui('moveUp')}">${svgI('up')}</button>
-          <button class="mini" data-act="down" aria-label="${ui('moveDown')}">${svgI('down')}</button>
-          <button class="mini danger" data-act="del" aria-label="${ui('remove')}">${svgI('trash')}</button>
-        </div>
+  const clsItems = c => SECTIONS.flatMap(s => c.items.filter(it => it[1] === s)).filter(it => byId[it[0]])
+    .map(([ex, sec, dur]) => ({ ex, sec, dur, reps: tx(byId[ex].reps), notes: '' }));
+  const clsMin = c => c.items.reduce((n, it) => n + (it[2] || 0), 0);
+  const clsEq = c => {
+    const set = new Set();
+    c.items.forEach(([id]) => {
+      const e = byId[id]; if (!e) return;
+      /* exercises tagged 'noequip' can be done with just a mat; their other equipment is optional */
+      e.eq.forEach(k => { if (k !== 'noequip' && (!e.eq.includes('noequip') || k === 'mat')) set.add(k); });
+    });
+    return [...set];
+  };
+  const clsSup = c => c.items.some(([id]) => byId[id] && byId[id].sup);
+  const catLab = k => k === 'props' ? ui('props') : lab('app', k);
+  function clsCard(c) {
+    const ids = [...new Set(c.items.map(it => it[0]))].slice(0, 4);
+    return `<article class="cls-card">
+      <div class="cls-strip">${ids.map(id => `<div class="thumb">${thumb(byId[id])}</div>`).join('')}</div>
+      <div class="cls-body">
+        <h3>${bi(c.title)}</h3>
+        <div class="meta"><span class="pill">${catLab(c.cat)}</span>${lvlPill(c.lvl)}<span class="pill">${fmtMin(clsMin(c))}</span><span class="pill">${c.items.length} ${ui('items')}</span>${clsSup(c) ? `<span class="pill sup">${svgI('eye')}${ui('supShort')}</span>` : ''}</div>
+        <p>${bi(c.focus)}</p>
       </div>
-    </div>`;
+      <a class="cover" href="#/class/${c.id}" aria-label="${esc(tx(c.title))}"></a>
+    </article>`;
   }
-  function viewBuild() {
-    const p = plan();
-    const opts = S.plans.map(x => `<option value="${x.id}" ${x.id === p.id ? 'selected' : ''}>${esc(planName(x))}</option>`).join('');
+  function viewClasses() {
+    const cats = ['all', ...CLASS_CATS].map(k => `<button class="chip" data-ccat="${k}" aria-pressed="${S.clsCat === k}">${k === 'all' ? ui('all') : catLab(k)}</button>`).join('');
+    const seg = ['all', ...LEVELS].map(l => `<button data-clvl="${l}" aria-pressed="${S.clsLvl === l}">${ui(l)}</button>`).join('');
+    return `<header class="page-head"><h1>${uiB('classes')}</h1><p>${uiB('classesLead')}</p></header>
+      <div class="toolbar"><div class="chips">${cats}</div><div class="seg" role="group" aria-label="${ui('level')}">${seg}</div></div>
+      <div id="clsResults"></div>`;
+  }
+  function renderClasses() {
+    const res = CLASSES.filter(c => (S.clsCat === 'all' || c.cat === S.clsCat) && (S.clsLvl === 'all' || c.lvl === S.clsLvl));
+    $('#clsResults').innerHTML = res.length ? `<div class="cls-grid">${res.map(clsCard).join('')}</div>` : `<div class="empty"><p>${uiB('noResults')}</p></div>`;
+  }
+  function mountClasses() {
+    $$('[data-ccat]').forEach(b => b.onclick = () => { S.clsCat = b.dataset.ccat; $$('[data-ccat]').forEach(x => x.setAttribute('aria-pressed', x === b)); renderClasses(); });
+    $$('[data-clvl]').forEach(b => b.onclick = () => { S.clsLvl = b.dataset.clvl; $$('[data-clvl]').forEach(x => x.setAttribute('aria-pressed', x === b)); renderClasses(); });
+    renderClasses();
+  }
+  function viewClass(id) {
+    const c = clsById[id];
+    if (!c) return `<div class="empty"><p>${uiB('noResults')}</p><a class="btn soft" href="#/classes">${ui('classes')}</a></div>`;
+    S.lastList = [...new Set(clsItems(c).map(it => it.ex))];
     const secs = SECTIONS.map((s, n) => {
-      const items = p.items.filter(it => it.sec === s);
-      const sub = items.reduce((a, it) => a + (parseFloat(it.dur) || 0), 0);
-      return `<section class="class-sec">
-        <div class="class-sec-head"><h2><span class="sec-num">${n + 1}</span>${bi(I.sections[s])}</h2><small data-sub="${s}">${items.length} ${ui('items')}, ${fmtMin(sub)}</small></div>
-        <div class="sec-list" data-sec="${s}">${items.length ? items.map(itemHTML).join('') : `<div class="sec-empty">${ui('emptySection')}</div>`}</div>
-        <div class="add-row"><button class="btn" data-add="${s}">${svgI('plus')}${ui('addHere')}</button></div>
-      </section>`;
+      const its = c.items.filter(it => it[1] === s && byId[it[0]]); if (!its.length) return '';
+      const sub = its.reduce((m, it) => m + it[2], 0);
+      return `<section class="class-sec"><div class="class-sec-head"><h2><span class="sec-num">${n + 1}</span>${bi(I.sections[s])}</h2><small>${fmtMin(sub)}</small></div>
+        <div class="sec-list">${its.map(([ex, , dur]) => { const e = byId[ex]; return `<a class="cls-item" href="#/ex/${ex}"><div class="thumb">${thumb(e)}</div><div><h3>${bi(e.name)}</h3><div class="meta">${e.app !== c.cat && c.cat !== 'props' ? `<span class="pill">${lab('app', e.app)}</span>` : ''}${lvlPill(e.lvl)}<span class="pill">${tx(e.reps)}</span><span class="pill">${fmtMin(dur)}</span>${supPill(e)}</div></div></a>`; }).join('')}</div></section>`;
     }).join('');
-    return `<header class="page-head"><h1>${uiB('build')}</h1></header>
-    <div class="class-wrap">
-      <div class="plan-bar">
-        <div class="plan-select-row"><select class="field" id="planSel" aria-label="${ui('build')}">${opts}</select>
-          <button class="icon-btn" id="newPlan" aria-label="${ui('newPlan')}" title="${ui('newPlan')}">${svgI('plus')}</button></div>
-        <label for="planName">${ui('planName')}</label>
-        <input class="field" id="planName" value="${esc(p.name)}" placeholder="${ui('untitled')}">
-        <div class="summary"><div class="total" id="planTotal">${fmtMin(total(p))}<small>${ui('totalTime')}, ${p.items.length} ${ui('items')}</small></div>
-          <button class="btn primary" id="presentBtn" ${p.items.length ? '' : 'disabled'}>${svgI('present')}${ui('present')}</button></div>
-        <div class="btn-row"><button class="btn soft" id="dupPlan">${svgI('copy')}${ui('duplicate')}</button><button class="btn ghost danger" id="delPlan">${svgI('trash')}${ui('deletePlan')}</button></div>
-      </div>
-      <div id="secs">${secs}</div>
-    </div>`;
+    return `<button class="back" id="backBtn">${svgI('back')}${ui('back')}</button>
+      <div class="class-wrap">
+        <div class="plan-bar">
+          <h1 class="cls-title">${bi(c.title)}</h1>
+          <div class="meta"><span class="pill">${catLab(c.cat)}</span>${lvlPill(c.lvl)}</div>
+          <p class="muted" style="margin:0">${bi(c.focus)}</p>
+          ${clsSup(c) ? `<div class="sup-banner" role="note">${svgI('eye')}<span>${uiB('supervision')}</span></div>` : ''}
+          <div class="summary"><div class="total">${fmtMin(clsMin(c))}<small>${ui('totalTime')}, ${c.items.length} ${ui('items')}</small></div></div>
+          <div><strong style="font-size:.85rem">${uiB('youNeed')}</strong><div class="tag-list" style="margin-top:6px">${clsEq(c).map(k => `<span class="tag">${labB('eq', k)}</span>`).join('')}</div></div>
+          <button class="btn primary" id="startCls">${svgI('present')}${ui('startClass')}</button>
+        </div>
+        <div>${secs}</div>
+      </div>`;
   }
-  function updateTotals() {
-    const p = plan();
-    SECTIONS.forEach(s => { const items = p.items.filter(it => it.sec === s); const el = $(`[data-sub="${s}"]`); if (el) el.textContent = `${items.length} ${ui('items')}, ${fmtMin(items.reduce((a, it) => a + (parseFloat(it.dur) || 0), 0))}`; });
-    const t = $('#planTotal'); if (t) t.innerHTML = `${fmtMin(total(p))}<small>${ui('totalTime')}, ${p.items.length} ${ui('items')}</small>`;
-    const pb = $('#presentBtn'); if (pb) pb.disabled = !p.items.length;
-  }
-  function mountBuild() {
-    const p = plan();
-    $('#planSel').onchange = ev => { S.active = ev.target.value; savePlans(); render(); };
-    $('#newPlan').onclick = () => { const np = { id: uid(), name: '', items: [] }; S.plans.push(np); S.active = np.id; savePlans(); render(); setTimeout(() => $('#planName') && $('#planName').focus(), 50); };
-    $('#planName').oninput = ev => { p.name = ev.target.value; savePlans(); const o = $(`#planSel option[value="${p.id}"]`); if (o) o.textContent = planName(p); };
-    $('#dupPlan').onclick = () => { const np = { id: uid(), name: planName(p) + ' (2)', items: p.items.map(it => ({ ...it, uid: uid() })) }; S.plans.push(np); S.active = np.id; savePlans(); render(); };
-    $('#delPlan').onclick = () => {
-      if (!confirm(ui('confirmDelete'))) return;
-      S.plans = S.plans.filter(x => x.id !== p.id); if (!S.plans.length) S.plans.push({ id: uid(), name: '', items: [] });
-      S.active = S.plans[0].id; savePlans(); render(); toast(ui('removed'));
-    };
-    $('#presentBtn').onclick = () => startPresentation();
-    const secs = $('#secs');
-    secs.addEventListener('input', ev => {
-      const f = ev.target.closest('[data-k]'); if (!f) return;
-      const it = p.items.find(x => x.uid === f.closest('.plan-item').dataset.uid); if (!it) return;
-      it[f.dataset.k] = f.dataset.k === 'dur' ? Math.max(0, parseFloat(f.value) || 0) : f.value;
-      savePlans(); if (f.dataset.k === 'dur') updateTotals();
-    });
-    secs.addEventListener('click', ev => {
-      const add = ev.target.closest('[data-add]'); if (add) { pickerSheet(add.dataset.add); return; }
-      const b = ev.target.closest('[data-act]'); if (!b) return;
-      const el = b.closest('.plan-item'), it = p.items.find(x => x.uid === el.dataset.uid);
-      if (b.dataset.act === 'del') { p.items = p.items.filter(x => x !== it); savePlans(); rerenderSecs(); toast(ui('removed')); return; }
-      const order = SECTIONS.flatMap(s => p.items.filter(x => x.sec === s));
-      const i = order.indexOf(it), j = b.dataset.act === 'up' ? i - 1 : i + 1;
-      if (j < 0 || j >= order.length) return;
-      const other = order[j];
-      if (other.sec !== it.sec) { it.sec = other.sec; }
-      order.splice(i, 1); order.splice(j, 0, it);
-      p.items = order; savePlans(); rerenderSecs();
-      const moved = $(`.plan-item[data-uid="${it.uid}"] [data-act="${b.dataset.act}"]`); moved && moved.focus();
-    });
-    enableDrag(secs);
-  }
-  function rerenderSecs() {
-    const scroll = window.scrollY; const tmp = document.createElement('div'); tmp.innerHTML = viewBuild();
-    $('#secs').innerHTML = tmp.querySelector('#secs').innerHTML; updateTotals(); window.scrollTo(0, scroll);
-  }
-  function enableDrag(root) {
-    root.addEventListener('pointerdown', ev => {
-      const h = ev.target.closest('.drag-handle'); if (!h || (ev.button !== undefined && ev.button !== 0)) return;
-      ev.preventDefault();
-      const item = h.closest('.plan-item'), r = item.getBoundingClientRect();
-      const ph = document.createElement('div'); ph.className = 'plan-ph'; ph.style.height = r.height + 'px';
-      item.parentNode.insertBefore(ph, item);
-      Object.assign(item.style, { width: r.width + 'px', left: r.left + 'px', top: r.top + 'px' });
-      item.classList.add('dragging'); document.body.appendChild(item);
-      const off = ev.clientY - r.top; let lastY = ev.clientY, raf = 0;
-      try { h.setPointerCapture(ev.pointerId); } catch (e) {}
-      $$('.sec-empty', root).forEach(x => x.style.display = 'none');
-      const scrollTick = () => {
-        const edge = 80, vh = window.innerHeight;
-        if (lastY < edge) window.scrollBy(0, -10); else if (lastY > vh - edge - 60) window.scrollBy(0, 10);
-        raf = requestAnimationFrame(scrollTick);
-      };
-      raf = requestAnimationFrame(scrollTick);
-      const move = e => {
-        lastY = e.clientY; item.style.top = (e.clientY - off) + 'px';
-        const under = document.elementFromPoint(e.clientX, e.clientY); if (!under) return;
-        const target = under.closest('.plan-item'), zone = under.closest('.sec-list');
-        if (target && target !== item && root.contains(target)) {
-          const tr = target.getBoundingClientRect();
-          if (e.clientY < tr.top + tr.height / 2) target.before(ph); else target.after(ph);
-        } else if (zone && root.contains(zone) && !zone.contains(ph)) {
-          zone.appendChild(ph);
-        }
-      };
-      const up = () => {
-        cancelAnimationFrame(raf);
-        h.removeEventListener('pointermove', move); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up);
-        ph.replaceWith(item); item.classList.remove('dragging'); item.removeAttribute('style');
-        const p = plan(), map = Object.fromEntries(p.items.map(it => [it.uid, it])), next = [];
-        $$('.sec-list', root).forEach(z => $$('.plan-item', z).forEach(el => { const it = map[el.dataset.uid]; if (it) { it.sec = z.dataset.sec; next.push(it); } }));
-        p.items = next; savePlans(); rerenderSecs();
-      };
-      h.addEventListener('pointermove', move); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
-    });
-  }
-  function pickerSheet(sec) {
-    let app = null, q = '';
-    const body = `<div class="search">${svgI('search')}<input id="pkQ" type="search" placeholder="${ui('searchPh')}" aria-label="${ui('searchPh')}"></div>
-      <div class="chips" style="margin:10px 0 0;padding:0" id="pkApps">${[null, ...APPS].map(a => `<button class="chip" data-pa="${a || ''}" aria-pressed="${a === null}">${a ? lab('app', a) : ui('all')}</button>`).join('')}</div>
-      <div class="pick-list" id="pkList"></div>`;
-    openSheet(`${ui('addHere')}: ${tx(I.sections[sec])}`, body, '', sh => {
-      const draw = () => {
-        const nq = norm(q.trim()), words = nq ? nq.split(/\s+/) : [];
-        const res = EX.filter(e => (!app || e.app === app) && words.every(w => INDEX[e.id].includes(w)));
-        sh.querySelector('#pkList').innerHTML = res.map(e => `<div class="pick-row"><div class="thumb">${thumb(e)}</div><div><b>${tx(e.name)}</b><div class="meta"><span class="pill">${lab('app', e.app)}</span>${lvlPill(e.lvl)}</div></div><button class="btn soft" data-pick="${e.id}">${svgI('plus')}${ui('pick')}</button></div>`).join('') || `<p class="muted">${ui('noResults')}</p>`;
-      };
-      draw();
-      sh.querySelector('#pkQ').oninput = ev => { q = ev.target.value; draw(); };
-      sh.addEventListener('click', ev => {
-        const a = ev.target.closest('[data-pa]'); if (a) { app = a.dataset.pa || null; $$('[data-pa]', sh).forEach(x => x.setAttribute('aria-pressed', x === a)); draw(); return; }
-        const b = ev.target.closest('[data-pick]'); if (b) { addItem(b.dataset.pick, sec); toast(ui('added')); rerenderSecs(); }
-      });
-    });
+  function mountClass(id) {
+    const c = clsById[id]; if (!c) return;
+    $('#backBtn').onclick = () => { if (navCount > 1) history.back(); else location.hash = '#/classes'; };
+    $('#startCls').onclick = () => startPresentation(c);
   }
 
   /* ——— Presentation mode ——— */
   let P = null;
-  function startPresentation() {
-    const p = plan();
-    const items = SECTIONS.flatMap(s => p.items.filter(it => it.sec === s)).filter(it => byId[it.ex]);
+  function startPresentation(c) {
+    const items = clsItems(c);
     if (!items.length) { toast(ui('presentEmpty')); return; }
     Voice.stop();
     const el = document.createElement('div'); el.className = 'present'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', ui('present'));
     document.body.appendChild(el); document.body.style.overflow = 'hidden';
-    P = { el, items, i: 0, timer: null, left: 0, running: false, breath: false, breathT: null, speakBreath: false, lock: null, player: null };
+    P = { el, items, cls: c, i: 0, timer: null, left: 0, running: false, breath: false, breathT: null, speakBreath: false, lock: null, player: null };
     if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then(l => P && (P.lock = l)).catch(() => {});
     const onKey = ev => { if (!P) return; if (ev.key === 'ArrowRight') go(1); else if (ev.key === 'ArrowLeft') go(-1); else if (ev.key === 'Escape') exit(); };
     document.addEventListener('keydown', onKey);
@@ -593,7 +763,7 @@
     const { el, items, i } = P, n = items.length;
     if (i >= n) {
       el.innerHTML = `<div class="p-top"><div class="grow"></div><button class="btn soft" id="pExit">${svgI('x')}${ui('exit')}</button></div>
-        <div class="p-done"><h2>${uiB('done')}</h2><p class="muted">${n} ${ui('items')}, ${fmtMin(total(plan()))}</p><div class="btn-row"><button class="btn soft" id="pBack">${svgI('back')}${ui('prev')}</button><button class="btn primary" id="pExit2">${ui('exit')}</button></div></div>`;
+        <div class="p-done"><h2>${uiB('done')}</h2><p class="muted">${bi(P.cls.title)}<br>${n} ${ui('items')}, ${fmtMin(clsMin(P.cls))}</p><div class="btn-row"><button class="btn soft" id="pBack">${svgI('back')}${ui('prev')}</button><button class="btn primary" id="pExit2">${ui('exit')}</button></div></div>`;
       $('#pExit', el).onclick = exit; $('#pExit2', el).onclick = exit; $('#pBack', el).onclick = () => go(-1);
       return;
     }
@@ -608,7 +778,7 @@
       <div class="p-bar"><i style="width:${(i / n) * 100}%"></i></div>
       <div class="p-body">
         <div class="p-stage"><div id="pFig"></div>${P.breath ? `<div class="breath-orb" id="orb" aria-live="polite"><i></i><span>${ui('inhale')}</span></div>` : ''}</div>
-        <div class="p-name"><h2>${bi(e.name)}</h2><div class="meta"><span class="pill">${lab('app', e.app)}</span>${lvlPill(e.lvl)}<span class="pill">${esc(it.reps)}</span>${supPill(e)}</div></div>
+        <div class="p-name"><h2>${bi(e.name)}</h2><div class="meta">${partPill(it.sec)}<span class="pill">${lab('app', e.app)}</span>${lvlPill(e.lvl)}<span class="pill">${esc(it.reps)}</span>${supPill(e)}</div></div>
         <div class="p-card timer"><div class="clock" id="pClock">${fmtClock(P.left)}</div>
           <div class="btn-row"><button class="btn primary" id="pTimer">${svgI('play')}${ui('timerStart')}</button><button class="btn soft" id="pReset" aria-label="${ui('timerReset')}">${svgI('repeat')}</button><button class="btn soft" id="pVoice" aria-label="${ui('listen')}">${svgI('speaker')}${ui('listen')}</button></div></div>
         ${P.breath ? `<label class="switch"><input type="checkbox" id="pSpeakBreath" ${P.speakBreath ? 'checked' : ''}>${ui('speakBreath')}</label>` : ''}
@@ -616,7 +786,7 @@
           ${it.notes ? `<div class="p-card"><h3>${ui('notes')}</h3><p style="margin:0;white-space:pre-wrap">${esc(it.notes)}</p></div>` : ''}
           <div class="p-card"><h3>${uiB('breath')}</h3><p style="margin:0">${bi(e.breath)}</p></div>
           <div class="p-card"><h3>${uiB('cues')}</h3>${list(e.cues)}</div>
-          <div class="p-card"><h3>${uiB('steps')}</h3>${list(e.steps, true)}</div>
+          <div class="p-card"><h3>${uiB(GUIDES[e.id] ? 'doMove' : 'steps')}</h3>${GUIDES[e.id] ? list(GUIDES[e.id].move, true) : list(e.steps, true)}</div>
           ${e.spr ? `<div class="p-card"><h3>${uiB('springs')}</h3><p style="margin:0">${bi(e.spr)}</p></div>` : ''}
         </div>
       </div>
@@ -651,6 +821,10 @@
     }
   }
 
+  function viewGlossary() {
+    return `<header class="page-head"><h1>${uiB('glossary')}</h1><p>${uiB('glossaryLead')}</p></header>
+      <div class="info">${GLOSSARY.map(([te, ts, me, ms]) => `<section><h2>${bi([te, ts])}</h2><p>${bi([me, ms])}</p></section>`).join('')}</div>`;
+  }
   function viewFavs() {
     const list0 = EX.filter(e => S.favs.has(e.id)); S.lastList = list0.map(e => e.id);
     return `<header class="page-head"><h1>${uiB('favs')}</h1></header>` +
@@ -663,16 +837,18 @@
     const [a, b] = h.split('/');
     if (!a) return { name: 'home' };
     if (a === 'ex' && b) return { name: 'ex', id: b };
+    if (a === 'props' && PROPS.includes(b)) return { name: 'prop', prop: b };
     if (APPS.includes(a)) return { name: 'app', app: a };
-    if (['library', 'build', 'favs'].includes(a)) return { name: a };
+    if (a === 'class' && b) return { name: 'class', id: b };
+    if (['library', 'classes', 'favs', 'glossary'].includes(a)) return { name: a };
     return { name: 'home' };
   }
   function navHTML() {
     const r = route();
-    const cur = r.name === 'app' ? r.app : r.name === 'ex' ? (byId[r.id] || {}).app : r.name;
-    const tabs = [['home', 'home', 'home'], ['cadillac', 'cadillac', 'cadillac'], ['mat', 'mat', 'mat'], ['wall', 'wall', 'wall'], ['build', 'class', 'buildShort'], ['favs', 'heart', 'favsShort']];
+    const cur = r.name === 'class' ? 'classes' : r.name === 'prop' ? 'library' : r.name === 'app' ? r.app : r.name === 'ex' ? (byId[r.id] || {}).app : r.name;
+    const tabs = [['home', 'home', 'home'], ['cadillac', 'cadillac', 'cadillac'], ['mat', 'mat', 'mat'], ['wall', 'wall', 'wall'], ['classes', 'class', 'classesShort'], ['favs', 'heart', 'favsShort']];
     $('#tabbar').innerHTML = tabs.map(([k, ic, l]) => `<a href="#/${k === 'home' ? '' : k}" ${cur === k ? 'aria-current="page"' : ''}><span class="tab-ico">${svgI(ic)}</span>${ui(l)}</a>`).join('');
-    const desk = [['home', 'home'], ['cadillac', 'cadillac'], ['mat', 'matLong'], ['wall', 'wall'], ['library', 'library'], ['build', 'build'], ['favs', 'favs']];
+    const desk = [['home', 'home'], ['cadillac', 'cadillac'], ['mat', 'matLong'], ['wall', 'wall'], ['library', 'library'], ['classes', 'classes'], ['favs', 'favs']];
     $('#deskNav').innerHTML = desk.map(([k, l]) => `<a href="#/${k === 'home' ? '' : k}" ${cur === k ? 'aria-current="page"' : ''}>${ui(l)}</a>`).join('');
     $$('#langSwitch button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === S.lang));
     $('#searchBtn').setAttribute('aria-label', ui('searchPh'));
@@ -686,17 +862,21 @@
     if (r.name === 'home') html = viewHome();
     else if (r.name === 'library') html = viewLibrary(null);
     else if (r.name === 'app') html = viewLibrary(r.app);
+    else if (r.name === 'prop') html = viewLibrary(null, r.prop);
     else if (r.name === 'ex') html = viewDetail(r.id);
-    else if (r.name === 'build') html = viewBuild();
+    else if (r.name === 'classes') html = viewClasses();
+    else if (r.name === 'class') html = viewClass(r.id);
     else if (r.name === 'favs') html = viewFavs();
+    else if (r.name === 'glossary') html = viewGlossary();
     main.innerHTML = html;
     navHTML();
     if (r.name === 'home') mountHome();
-    else if (r.name === 'library' || r.name === 'app') mountLibrary();
+    else if (r.name === 'library' || r.name === 'app' || r.name === 'prop') mountLibrary();
     else if (r.name === 'ex') mountDetail(r.id);
-    else if (r.name === 'build') mountBuild();
-    const t = { home: ui('appName'), library: ui('library'), app: r.app && lab('app', r.app), ex: r.id && byId[r.id] && tx(byId[r.id].name), build: ui('build'), favs: ui('favs') }[r.name];
-    document.title = t && r.name !== 'home' ? `${t} | Springline` : 'Springline Pilates';
+    else if (r.name === 'classes') mountClasses();
+    else if (r.name === 'class') mountClass(r.id);
+    const t = { home: ui('appName'), library: ui('library'), app: r.app && lab('app', r.app), prop: r.prop && lab('eq', r.prop), ex: r.id && byId[r.id] && tx(byId[r.id].name), classes: ui('classes'), glossary: ui('glossary'), class: r.id && clsById[r.id] && tx(clsById[r.id].title), favs: ui('favs') }[r.name];
+    document.title = t && r.name !== 'home' ? `${t} | Springline` : 'Springline — Cadillac, Mat & Wall Unit Pilates';
   }
   let navCount = 1;
   window.addEventListener('hashchange', () => { navCount++; render(); window.scrollTo(0, 0); });
@@ -707,9 +887,10 @@
     S.lang = b.dataset.lang; store.set('lang', S.lang);
     const y = window.scrollY; render(); window.scrollTo(0, y);
   });
-  $('#searchBtn').onclick = () => { if (!/^#\/(library|cadillac|mat|wall)/.test(location.hash)) location.hash = '#/library'; setTimeout(() => { const s = $('#libSearch'); s && s.focus(); }, 60); };
+  $('#searchBtn').onclick = () => { if (!/^#\/(library|cadillac|mat|wall|props)/.test(location.hash)) location.hash = '#/library'; setTimeout(() => { const s = $('#libSearch'); s && s.focus(); }, 60); };
 
   render();
+  main.setAttribute('data-ok', '1');
 
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));

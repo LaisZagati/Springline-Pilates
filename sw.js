@@ -1,10 +1,8 @@
 /* Springline service worker: offline app shell, cache-first for local files, runtime cache for Google Fonts.
    Bump VERSION after editing any file so phones pick up the update. */
-const VERSION = 'springline-v2';
+const VERSION = 'springline-v7';
 const SHELL = [
-  './', './index.html', './styles.css', './manifest.webmanifest',
-  './i18n.js', './figures.js', './app.js',
-  './cadillac.js', './mat.js', './wall.js',
+  './', './index.html', './styles.css', './app.js', './data.js', './manifest.webmanifest',
   './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png'
 ];
 self.addEventListener('install', e => {
