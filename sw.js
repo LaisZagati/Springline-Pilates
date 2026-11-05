@@ -1,6 +1,6 @@
 /* Springline service worker: offline app shell, cache-first for local files, runtime cache for Google Fonts.
    Bump VERSION after editing any file so phones pick up the update. */
-const VERSION = 'springline-v7';
+const VERSION = 'springline-v9';
 const SHELL = [
   './', './index.html', './styles.css', './app.js', './data.js', './manifest.webmanifest',
   './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png'

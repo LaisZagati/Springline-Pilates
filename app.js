@@ -65,7 +65,21 @@ window.SL_I18N = {
     quickSummary:['Quick summary for instructors','Resumen rápido para instructores'],
     glossary:['Pilates words explained','Palabras de Pilates explicadas'], glossaryShort:['Plain meanings of the terms used in the steps.','El significado sencillo de los términos usados en los pasos.'],
     glossaryLead:['Simple explanations of the words you will see in the exercise steps.','Explicaciones sencillas de las palabras que verás en los pasos de los ejercicios.'],
-    startClass:['Start class','Empezar clase'], youNeed:['You will need','Necesitarás'], inClasses:['Used in these classes','Incluido en estas clases'],
+    startClass:['Start class','Empezar clase'],
+    pl_total:['class time','tiempo de clase'], pl_exercises:['Exercises','Ejercicios'], pl_restart:['Start the class again','Empezar la clase de nuevo'],
+    pl_read:['Read this line','Leer esta frase'], pl_smaller:['Smaller text','Texto más pequeño'], pl_bigger:['Bigger text','Texto más grande'],
+    pl_settings:['Audio settings','Ajustes de audio'], pl_voice:['Voice','Voz'], pl_female:['Female','Mujer'], pl_male:['Male','Hombre'],
+    pl_speed:['Speed','Velocidad'], pl_gap:['Pause between lines','Pausa entre frases'], pl_repSec:['Time per rep','Tiempo por repetición'], pl_noWait:["Don't wait",'No esperar'],
+    pl_phones:['Headphone buttons','Botones de los auriculares'], pl_phonesHint:['With headphone buttons on, press play/pause to start or stop and next/previous to move line by line. Turn it off if the voice behaves oddly on your phone.','Con los botones de auriculares activados, pulsa play/pausa para empezar o parar y siguiente/anterior para avanzar frase a frase. Desactívalo si la voz falla en tu móvil.'],
+    pl_test:['Test audio','Probar audio'], pl_sample:['Hi, this is your class voice.','Hola, esta es la voz de tu clase.'],
+    pl_noFemale:['no female voice on this device','no hay voz de mujer en este dispositivo'], pl_noMale:['no male voice on this device','no hay voz de hombre en este dispositivo'],
+    pl_hint:['Tap any line to hear it. Hands-free reads the whole class, waits while you do your reps, and moves to the next exercise by itself.','Toca cualquier frase para escucharla. Manos libres lee toda la clase, espera mientras haces las repeticiones y pasa sola al siguiente ejercicio.'],
+    pl_lockNote:['The screen stays on during the class. Do not lock the phone: if you lock it, the browser stops the voice. Your place is saved, so you can always continue from the same line.','La pantalla se mantiene encendida durante la clase. No bloquees el móvil: si lo bloqueas, el navegador detiene la voz. Tu posición se guarda y siempre puedes continuar desde la misma frase.'],
+    pl_prevEx:['Previous exercise','Ejercicio anterior'], pl_nextEx:['Next exercise','Siguiente ejercicio'],
+    pl_prev:['Previous line','Frase anterior'], pl_next:['Next line','Siguiente frase'],
+    pl_autoOn:['Hands-free','Manos libres'], pl_autoOff:['Pause','Pausa'],
+    pl_speaking:['Speaking…','Leyendo…'], pl_nextIn:['Next line in {s} s','Siguiente frase en {s} s'], pl_reps:['Your turn: {s} s left','Te toca: quedan {s} s'],
+    pl_skip:['Skip','Saltar'], pl_done:['Class complete. Well done!','Clase terminada. ¡Muy bien!'], pl_keep:['Keep in mind','Ten en cuenta'], pl_target:['target {m} min','objetivo {m} min'], youNeed:['You will need','Necesitarás'], inClasses:['Used in these classes','Incluido en estas clases'],
     ringDesc:['Also called the magic circle. Adds resistance, connection to the inner thighs and arm work.','También llamado círculo mágico. Añade resistencia, conexión de aductores y trabajo de brazos.'],
     ballDesc:['A soft mini ball, 20–25 cm, slightly deflated. Supports, squeezes and adds gentle instability.','Una mini pelota blanda de 20–25 cm, algo desinflada. Apoya, se aprieta y añade una inestabilidad suave.'],
     bigballDesc:['A stability ball, 55–75 cm. Choose a size where the hips sit level with or above the knees.','Una fitball de 55–75 cm. Elige un tamaño con la cadera a la altura de las rodillas o algo por encima.'],
@@ -364,7 +378,7 @@ window.SLFig = (function () {
       const u = new SpeechSynthesisUtterance(this.q[this.i]);
       const v = this.pick(this.lang); if (v) u.voice = v;
       u.lang = v ? v.lang : (this.lang === 'es' ? 'es-ES' : 'en-GB');
-      u.rate = this.lang === 'es' ? 0.9 : 0.88; u.pitch = 1;
+      u.rate = store.get('pl.rate', 0.95); u.pitch = 1;
       u.onend = () => { if (tok !== this.tok) return; this.i++; this.emit(); this.timer = setTimeout(() => this.speak(tok), 420); };
       u.onerror = () => { if (tok !== this.tok) return; this.playing = false; this.emit(); };
       speechSynthesis.speak(u); this.emit();
@@ -724,7 +738,7 @@ window.SLFig = (function () {
   function mountClass(id) {
     const c = clsById[id]; if (!c) return;
     $('#backBtn').onclick = () => { if (navCount > 1) history.back(); else location.hash = '#/classes'; };
-    $('#startCls').onclick = () => startPresentation(c);
+    $('#startCls').onclick = () => { location.hash = '#/play/' + c.id; };
   }
 
   /* ——— Presentation mode ——— */
@@ -831,6 +845,368 @@ window.SLFig = (function () {
       (list0.length ? `<div class="grid">${list0.map(e => card(e, true)).join('')}</div>` : `<div class="empty"><p>${uiB('favEmpty')}</p><a class="btn primary" href="#/library">${ui('browseAll')}</a></div>`);
   }
 
+  /* ——— Voice picking (shared by the class player and the exercise pages) ———
+     Prefers a female voice by default, ranks enhanced/premium voices first,
+     and on browsers with Google voices (Chrome on a computer) uses only those. */
+  const VP = (() => {
+    const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+    let voices = [];
+    const bad = new Set();
+    const FEMALE = /female|samantha|karen|moira|tessa|victoria|fiona|veena|serena|allison|\bava\b|susan|zira|hazel|catherine|\bkate\b|martha|stephanie|libby|sonia|jenny|\baria\b|\bzoe\b|nicky|joelle|m[oó]nica|paulina|marisol|soledad|helena|laura|sabina|elvira|dalia|luciana|francisca|google us english|google español de estados unidos/i;
+    const MALE = /\bmale\b|^google español$|daniel|\balex\b|fred|rishi|oliver|arthur|aaron|\btom\b|david|\bmark\b|george|james|ryan|\bguy\b|jorge|juan|diego|carlos|pablo|ra[uú]l|[aá]lvaro|enrique|jos[eé]/i;
+    const NOVELTY = /bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|kathy|ralph|junior|eddy|\bflo\b|grandma|grandpa|\breed\b|rocko|sandy|shelley/i;
+    const langOf = v => (v.lang || '').replace('_', '-').toLowerCase();
+    const isF = v => FEMALE.test(v.name), isM = v => !isF(v) && MALE.test(v.name);
+    const quality = v => /enhanced|premium|neural|natural/i.test(v.name + ' ' + v.voiceURI) ? 0 : 1;
+    function load() { try { voices = synth ? synth.getVoices() : []; } catch (e) { voices = []; } api.emit(); }
+    function pool(lang) {
+      const any = voices.filter(v => langOf(v).startsWith(lang) && !bad.has(v.voiceURI));
+      const clean = any.filter(v => !NOVELTY.test(v.name));
+      const all = clean.length ? clean : any;
+      const google = all.filter(v => /^google/i.test(v.name));
+      const p = google.length ? google : all;
+      const reg = lang === 'es' ? ['es-es', 'es-mx', 'es-us'] : ['en-gb', 'en-us', 'en-au', 'en-ie'];
+      const rank = v => { const i = reg.findIndex(r => langOf(v).startsWith(r)); return i < 0 ? 9 : i; };
+      return p.slice().sort((x, y) => quality(x) - quality(y) || rank(x) - rank(y));
+    }
+    const api = {
+      synth, listeners: new Set(),
+      gender: store.get('gender', 'f'),
+      get count() { return voices.length; },
+      emit() { this.listeners.forEach(f => f()); },
+      voiceFor(lang) {
+        const p = pool(lang); if (!p.length) return null;
+        const want = this.gender === 'm' ? isM : isF;
+        return p.find(want) || p.find(v => !isF(v) && !isM(v)) || p[0];
+      },
+      matches(v) { return v && (this.gender === 'm' ? isM(v) : isF(v)); },
+      say(text, lang, rate) {
+        return new Promise(res => {
+          if (!synth) { res(); return; }
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = lang === 'es' ? 'es-ES' : 'en-GB';
+          const v = this.voiceFor(lang); if (v) { try { u.voice = v; u.lang = v.lang; } catch (e) {} }
+          u.rate = rate || 0.95;
+          let fin = false; const end = () => { if (!fin) { fin = true; res(); } };
+          u.onend = end;
+          u.onerror = e => { const er = e && e.error; if (v && er && er !== 'interrupted' && er !== 'canceled') bad.add(v.voiceURI); end(); };
+          setTimeout(end, 1800 + text.length * 110 / (rate || 0.95)); /* safety net if a browser never fires onend */
+          synth.speak(u);
+        });
+      },
+      unlock() { try { if (synth && !synth.speaking) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } } catch (e) {} } /* iOS needs a first utterance inside a tap */
+    };
+    if (synth) { load(); synth.onvoiceschanged = load; setTimeout(load, 800); setTimeout(load, 2500); }
+    return api;
+  })();
+  Voice.pick = lng => VP.voiceFor(lng);
+
+  /* ——— Keep the screen awake: Wake Lock API, with a silent looping video as fallback ——— */
+  const Awake = {
+    lock: null, video: null, on: false,
+    async start() {
+      this.on = true;
+      try { if ('wakeLock' in navigator) { this.lock = await navigator.wakeLock.request('screen'); this.lock.addEventListener('release', () => { this.lock = null; }); return; } } catch (e) {}
+      try {
+        if (!this.video) {
+          const v = document.createElement('video');
+          v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.muted = true; v.loop = true;
+          v.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:0;top:0';
+          v.src = 'data:video/mp4;base64,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';
+          document.body.appendChild(v); this.video = v;
+        }
+        await this.video.play();
+      } catch (e) {}
+    },
+    stop() {
+      this.on = false;
+      try { this.lock && this.lock.release(); } catch (e) {} this.lock = null;
+      try { this.video && this.video.pause(); } catch (e) {}
+    }
+  };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Awake.on) Awake.start(); });
+
+  /* ——— Class player: line-by-line script, hands-free flow ——— */
+  const PL = {
+    c: null, items: [], ex: 0, cue: 0, lines: [], cues: [], auto: false, tok: 0, skip: null,
+    classSec: 0, exSec: 0, tick: null, fig: null, media: null,
+    rate: store.get('pl.rate', 0.95), gap: store.get('pl.gap', 1.5), repSec: store.get('pl.repSec', 3),
+    fs: store.get('pl.fs', 1.12), phones: store.get('pl.phones', false)
+  };
+  const T2 = (en, es) => [en, es];
+  function repSeconds(repsEn) {
+    if (!PL.repSec) return 0;
+    const s = repsEn.toLowerCase(), nums = (s.match(/\d+/g) || []).map(Number), n = nums[0] || 0;
+    const sides = /each (side|leg|foot|direction)|per side|each,/.test(s) ? 2 : 1;
+    let secs;
+    if (/second/.test(s)) secs = n * sides;
+    else if (/minute/.test(s)) secs = n * 60 * sides;
+    else if (/breath/.test(s)) secs = (+((s.match(/(\d+)\s*breath/) || [])[1]) || n) * 6;
+    else if (/beats/.test(s)) secs = n * 10 * 0.7;
+    else if (/round/.test(s)) secs = n * 3 * (nums[1] || 1) * PL.repSec * 0.6;
+    else secs = n * sides * PL.repSec;
+    return Math.round(Math.min(150, Math.max(8, secs)));
+  }
+  function buildScript(it, i, n) {
+    const e = byId[it.ex], g = GUIDES[e.id], c = PL.c, L = [];
+    const H = t => L.push({ k: 'h', t }), C = t => L.push({ k: 'c', t }), R = (t, secs) => L.push({ k: 'r', t, secs });
+    if (i === 0) C(T2(`Welcome to ${c.title[0]}. ${c.focus[0]}`, `Te damos la bienvenida a ${c.title[1]}. ${c.focus[1]}`));
+    C(T2(`Exercise ${i + 1} of ${n}: ${e.name[0]}. ${I.sections[it.sec][0]}, about ${it.dur} minutes.`, `Ejercicio ${i + 1} de ${n}: ${e.name[1]}. ${I.sections[it.sec][1]}, unos ${it.dur} minutos.`));
+    if (e.sup) C(T2('This exercise needs instructor supervision.', 'Este ejercicio requiere la supervisión de un instructor.'));
+    if (g) {
+      H(I.ui.getReady); g.ready[0].forEach((x, j) => C([x, g.ready[1][j]]));
+      H(I.ui.doMove); g.move[0].forEach((x, j) => C([x, g.move[1][j]]));
+    } else {
+      H(I.ui.start); C(e.start);
+      H(I.ui.steps); e.steps[0].forEach((x, j) => C([x, e.steps[1][j]]));
+    }
+    H(I.ui.pl_keep);
+    C(T2('Breathing: ' + e.breath[0], 'Respiración: ' + e.breath[1]));
+    e.cues[0].forEach((x, j) => C([x, e.cues[1][j]]));
+    R(T2(`Your turn: ${e.reps[0]}.`, `Te toca: ${e.reps[1]}.`), repSeconds(e.reps[0]));
+    if (g) { H(I.ui.finishSafe); g.finish[0].forEach((x, j) => C([x, g.finish[1][j]])); }
+    if (i === n - 1) C(T2('That is the end of the class. Thank you, well done.', 'Hemos terminado la clase. Gracias, ¡muy bien!'));
+    else { const nx = byId[PL.items[i + 1].ex]; C(T2(`Next: ${nx.name[0]}.`, `A continuación: ${nx.name[1]}.`)); }
+    return L;
+  }
+  const plSave = () => store.set('pl.pos.' + PL.c.id, { ex: PL.ex, cue: PL.cue });
+  const fmtC = s => { s = Math.max(0, Math.round(s)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+  function lineText(t) {
+    if (S.lang === 'both' && t[0] !== t[1]) return `${esc(t[0])}<span class="tr" lang="es">${esc(t[1])}</span>`;
+    return esc(t[S.lang === 'es' ? 1 : 0]);
+  }
+
+  function viewPlay(id) {
+    const c = clsById[id];
+    if (!c) return `<div class="empty"><p>${uiB('noResults')}</p><a class="btn soft" href="#/classes">${ui('classes')}</a></div>`;
+    const sel = (key, opts, val) => `<select id="${key}">${opts.map(([v, l]) => `<option value="${v}" ${String(v) === String(val) ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+    return `<div class="pl">
+      <div class="pl-top">
+        <a class="back" href="#/class/${c.id}">${svgI('back')}<span class="sr-only">${ui('back')}</span></a>
+        <div class="pl-title"><b>${tx(c.title)}</b><small><span id="plClock">00:00</span> · ${ui('pl_total')}</small></div>
+        <button class="btn soft" id="plListBtn" aria-expanded="false" aria-controls="plRail"></button>
+      </div>
+      <div class="pl-wrap">
+        <aside class="pl-rail" id="plRail"><ol id="plList"></ol><button class="btn ghost" id="plRestart">${svgI('repeat')}${ui('pl_restart')}</button></aside>
+        <section class="pl-main">
+          <div class="pl-head">
+            <span class="pl-num" id="plNum">1</span>
+            <div class="pl-name"><h1 id="plName"></h1><div class="meta" id="plMeta"></div></div>
+            <div class="pl-timer"><b id="plExClock">00:00</b><small id="plTarget"></small></div>
+          </div>
+          <div class="pl-figwrap"><div class="pl-fig" id="plFig"></div></div>
+          <div class="pl-tools">
+            <button class="btn soft" id="plRead">${svgI('speaker')}${ui('pl_read')}</button>
+            <span class="pl-fs"><button class="btn soft" id="plFsDown" aria-label="${ui('pl_smaller')}">A−</button><button class="btn soft" id="plFsUp" aria-label="${ui('pl_bigger')}">A+</button></span>
+          </div>
+          <details class="pl-set"><summary>${ui('pl_settings')}</summary>
+            <div class="pl-setgrid">
+              <label>${ui('pl_voice')}<span class="seg pl-gender" role="group"><button type="button" data-g="f" aria-pressed="${VP.gender === 'f'}">${ui('pl_female')}</button><button type="button" data-g="m" aria-pressed="${VP.gender === 'm'}">${ui('pl_male')}</button></span></label>
+              <label>${ui('pl_speed')}${sel('plRate', [[0.8, '0.8×'], [0.95, '1×'], [1.1, '1.2×']], PL.rate)}</label>
+              <label>${ui('pl_gap')}${sel('plGap', [[1, '1 s'], [1.5, '1.5 s'], [2.5, '2.5 s'], [4, '4 s']], PL.gap)}</label>
+              <label>${ui('pl_repSec')}${sel('plRep', [[0, ui('pl_noWait')], [2, '2 s'], [3, '3 s'], [5, '5 s']], PL.repSec)}</label>
+              <label class="switch"><input type="checkbox" id="plPhones" ${PL.phones ? 'checked' : ''}>${ui('pl_phones')}</label>
+              <button class="btn soft" id="plTest" type="button">${ui('pl_test')}</button>
+              <p class="pl-used" id="plUsed"></p>
+              <p class="pl-used">${ui('pl_phonesHint')}</p>
+            </div>
+          </details>
+          <div class="pl-script" id="plScript" tabindex="0"></div>
+          <p class="pl-hint">${uiB('pl_hint')}</p>
+          <p class="pl-hint">${uiB('pl_lockNote')}</p>
+          <div class="pl-exnav"><button class="btn soft" id="plPrevEx">${svgI('back')}${ui('pl_prevEx')}</button><button class="btn soft" id="plNextEx">${ui('pl_nextEx')}${svgI('fwd')}</button></div>
+        </section>
+      </div>
+      <div class="pl-dock">
+        <div class="pl-status" aria-live="polite"><span id="plStatus"></span><button class="btn soft" id="plSkip" hidden>${ui('pl_skip')}</button></div>
+        <div class="pl-bar">
+          <button class="btn soft" id="plPrev" aria-label="${ui('pl_prev')}">${svgI('back')}</button>
+          <button class="btn soft" id="plAuto" aria-pressed="false"></button>
+          <button class="btn primary" id="plNext">${ui('pl_next')}${svgI('fwd')}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function plRenderRail() {
+    $('#plList').innerHTML = PL.items.map((it, i) => {
+      const e = byId[it.ex];
+      return `<li><button data-ex="${i}" ${i === PL.ex ? 'aria-current="step"' : ''} class="${i < PL.ex ? 'done' : ''}"><span class="n">${i + 1}</span><span class="t">${tx(e.name)}<small>${lab('sec', it.sec)}</small></span><span class="m">${it.dur} ${ui('min')}</span></button></li>`;
+    }).join('');
+    $('#plListBtn').textContent = `${ui('pl_exercises')} ${PL.ex + 1}/${PL.items.length}`;
+  }
+  function plRenderExercise() {
+    const it = PL.items[PL.ex], e = byId[it.ex];
+    PL.lines = buildScript(it, PL.ex, PL.items.length);
+    PL.cues = PL.lines.filter(l => l.k !== 'h');
+    $('#plNum').textContent = PL.ex + 1;
+    $('#plName').innerHTML = bi(e.name);
+    $('#plMeta').innerHTML = `${partPill(it.sec)}<span class="pill">${lab('app', e.app)}</span>${lvlPill(e.lvl)}${supPill(e)}`;
+    $('#plTarget').textContent = ui('pl_target').replace('{m}', it.dur);
+    PL.fig = Fig.Player($('#plFig'), e.fig, tx(e.name));
+    const sc = $('#plScript'); let k = -1;
+    sc.innerHTML = PL.lines.map(l => {
+      if (l.k === 'h') return `<h3>${lineText(l.t)}</h3>`;
+      k++;
+      if (l.k === 'r') return `<button class="cue reps" data-cue="${k}">${svgI('present')}<span>${lineText(l.t)}${l.secs ? `<small>${PL.repSec ? fmtC(l.secs) : ''}</small>` : ''}</span></button>`;
+      return `<button class="cue" data-cue="${k}">${lineText(l.t)}</button>`;
+    }).join('');
+    $('#plPrevEx').disabled = PL.ex === 0;
+    $('#plNextEx').disabled = PL.ex === PL.items.length - 1;
+    plRenderRail();
+    plSetCue(Math.min(PL.cue, PL.cues.length - 1), true);
+  }
+  function plSetCue(i, noScroll) {
+    PL.cue = Math.max(0, Math.min(i, PL.cues.length - 1)); plSave();
+    $$('#plScript .cue').forEach((b, j) => { b.classList.toggle('now', j === PL.cue); b.classList.toggle('past', j < PL.cue); });
+    const b = $(`#plScript .cue[data-cue="${PL.cue}"]`);
+    if (b && !noScroll) { const r = b.getBoundingClientRect(), dockTop = $('.pl-dock').getBoundingClientRect().top; if (r.top < 90 || r.bottom > dockTop - 20) window.scrollBy({ top: r.top - window.innerHeight / 3, behavior: 'smooth' }); }
+    if (b && noScroll === true && PL.cue > 0) { const r = b.getBoundingClientRect(); window.scrollBy(0, r.top - window.innerHeight / 3); }
+    plMedia();
+  }
+  function plGoEx(i, cue) {
+    PL.ex = Math.max(0, Math.min(i, PL.items.length - 1)); PL.cue = cue || 0; PL.exSec = 0;
+    plRenderExercise(); if (!cue) window.scrollTo(0, 0);
+  }
+  function plStatus(text, canSkip) { const s = $('#plStatus'); if (!s) return; s.textContent = text || ''; $('#plSkip').hidden = !canSkip; }
+  function plMark(on) { $$('#plScript .cue').forEach(b => b.classList.remove('speaking', 'counting')); const b = $(`#plScript .cue[data-cue="${PL.cue}"]`); if (on && b) b.classList.add('speaking'); }
+  async function plSayLine(l, tok) {
+    if (S.lang === 'both') { await VP.say(l.t[0], 'en', PL.rate); if (tok === PL.tok) await VP.say(l.t[1], 'es', PL.rate); }
+    else await VP.say(l.t[S.lang === 'es' ? 1 : 0], S.lang === 'es' ? 'es' : 'en', PL.rate);
+  }
+  function plWait(secs, tok, key) {
+    return new Promise(res => {
+      let left = secs; const show = () => plStatus(ui(key).replace('{s}', Math.ceil(left)), true);
+      show();
+      const iv = setInterval(() => { if (tok !== PL.tok) { done(); return; } left -= 0.25; if (left <= 0) done(); else show(); }, 250);
+      function done() { clearInterval(iv); PL.skip = null; res(); }
+      PL.skip = done;
+    });
+  }
+  async function plSpeak() {
+    const tok = ++PL.tok; if (PL.skip) PL.skip();
+    if (VP.synth) VP.synth.cancel();
+    const l = PL.cues[PL.cue]; if (!l) return;
+    await new Promise(r => setTimeout(r, 60)); /* some browsers drop speech right after cancel() */
+    if (tok !== PL.tok) return;
+    plMark(true); plStatus(ui('pl_speaking'));
+    await plSayLine(l, tok);
+    if (tok !== PL.tok) return;
+    plMark(false);
+    if (!PL.auto) { plStatus(''); return; }
+    if (l.k === 'r' && l.secs) {
+      const b = $(`#plScript .cue[data-cue="${PL.cue}"]`); b && b.classList.add('counting');
+      await plWait(l.secs, tok, 'pl_reps');
+      b && b.classList.remove('counting');
+      if (tok === PL.tok && PL.auto) chime();
+    } else await plWait(PL.gap, tok, 'pl_nextIn');
+    if (tok === PL.tok && PL.auto) plAdvance();
+  }
+  function plAdvance() {
+    if (PL.cue < PL.cues.length - 1) plSetCue(PL.cue + 1);
+    else if (PL.ex < PL.items.length - 1) plGoEx(PL.ex + 1);
+    else { plStop(); plStatus(ui('pl_done')); return; }
+    plSpeak();
+  }
+  function plStep(d) {
+    if (d > 0 && PL.cue >= PL.cues.length - 1) { if (PL.ex < PL.items.length - 1) plGoEx(PL.ex + 1); else return; }
+    else if (d < 0 && PL.cue === 0) { if (PL.ex > 0) { plGoEx(PL.ex - 1); plSetCue(PL.cues.length - 1); } else return; }
+    else plSetCue(PL.cue + d);
+    plSpeak();
+  }
+  function plStart() {
+    VP.unlock(); PL.auto = true; Awake.start(); plPhonesOn(); plUI(); plSpeak();
+  }
+  function plStop() {
+    PL.auto = false; PL.tok++; if (PL.skip) PL.skip();
+    if (VP.synth) VP.synth.cancel(); plMark(false); plStatus(''); plUI();
+    if (PL.media) { try { PL.media.pause(); } catch (e) {} }
+  }
+  function plUI() {
+    const a = $('#plAuto'); if (!a) return;
+    a.innerHTML = PL.auto ? `${svgI('pause')}${ui('pl_autoOff')}` : `${svgI('play')}${ui('pl_autoOn')}`;
+    a.classList.toggle('primary', PL.auto); a.classList.toggle('soft', !PL.auto); a.setAttribute('aria-pressed', String(PL.auto));
+    const used = $('#plUsed');
+    if (used) {
+      if (!VP.synth) used.textContent = ui('noVoice');
+      else used.textContent = ['en', 'es'].map(l => { const v = VP.voiceFor(l); return (l === 'en' ? 'English' : 'Español') + ': ' + (v ? v.name + (VP.matches(v) ? '' : ' (' + ui(VP.gender === 'm' ? 'pl_noMale' : 'pl_noFemale') + ')') : '—'); }).join('   ·   ');
+    }
+    $$('.pl-gender [data-g]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.g === VP.gender)));
+  }
+  /* Headphone buttons (Media Session). Needs a silent audio track playing while hands-free is on. */
+  function plPhonesOn() {
+    if (!PL.phones || !('mediaSession' in navigator)) return;
+    try {
+      if (!PL.media) { PL.media = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMAAAAAAAAAAAAAAA//NwwAAAAAAAAAAAAEluZm8AAAAPAAAAwgAAKE4ABwkMDhEUFhkbHiEjJigrLS8xNDc5PD5BREZJS05RU1ZYWlxfYWRnaWxucXN2eXt+gIOEh4qMj5GUlpmcnqGjpqmrra+ytLe6vL/BxMbJzM7R09bX2tzf4uTn6ezv8fT2+fz+AAAAAExhdmM2MC4zMQAAAAAAAAAAAAAAACQDlgAAAAAAAChOcsTbwgAAAAAAAAAAAAAAAAD/8yDEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixCcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDETwAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxHYAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMSdAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLExAAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVV//MixNcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVX/8yLE1wAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zIMTYAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8yDE2AAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zIsTXAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//MgxNgAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ=='); PL.media.loop = true; }
+      PL.media.play().catch(() => {});
+      const ms = navigator.mediaSession;
+      ms.setActionHandler('play', () => { if (!PL.auto) plStart(); });
+      ms.setActionHandler('pause', () => { if (PL.auto) plStop(); });
+      ms.setActionHandler('nexttrack', () => plStep(1));
+      ms.setActionHandler('previoustrack', () => plStep(-1));
+      plMedia();
+    } catch (e) {}
+  }
+  function plMedia() {
+    if (!PL.phones || !('mediaSession' in navigator) || !PL.c) return;
+    try { const e = byId[PL.items[PL.ex].ex]; navigator.mediaSession.metadata = new MediaMetadata({ title: tx(e.name), artist: tx(PL.c.title), album: 'Springline' }); } catch (e) {}
+  }
+  function plLeave() {
+    if (!PL.c) return;
+    plStop(); clearInterval(PL.tick); Awake.stop();
+    VP.listeners.delete(plUI); document.body.classList.remove('playing');
+    if (PL.media) { try { PL.media.pause(); } catch (e) {} }
+    PL.c = null;
+  }
+  function mountPlay(id) {
+    const c = clsById[id]; if (!c) return;
+    PL.c = c; PL.items = clsItems(c);
+    const pos = store.get('pl.pos.' + c.id, null);
+    PL.ex = pos && pos.ex < PL.items.length ? pos.ex : 0; PL.cue = pos ? pos.cue : 0;
+    PL.classSec = store.get('pl.sec.' + c.id, 0); PL.exSec = 0;
+    document.body.classList.add('playing');
+    document.documentElement.style.setProperty('--plfs', PL.fs + 'rem');
+    plRenderExercise(); plUI(); VP.listeners.add(plUI);
+    Awake.start(); /* keep the screen on for the whole class, not only in hands-free */
+    $('#plClock').textContent = fmtC(PL.classSec);
+    clearInterval(PL.tick);
+    PL.tick = setInterval(() => {
+      if (!PL.auto) return;
+      PL.classSec++; PL.exSec++; if (PL.classSec % 5 === 0) store.set('pl.sec.' + c.id, PL.classSec);
+      const cl = $('#plClock'); if (!cl) return; cl.textContent = fmtC(PL.classSec);
+      const ec = $('#plExClock'); ec.textContent = fmtC(PL.exSec); ec.classList.toggle('over', PL.exSec > PL.items[PL.ex].dur * 60);
+    }, 1000);
+    $('#plScript').addEventListener('click', ev => { const b = ev.target.closest('[data-cue]'); if (!b) return; VP.unlock(); plSetCue(+b.dataset.cue); plSpeak(); });
+    $('#plList').addEventListener('click', ev => { const b = ev.target.closest('[data-ex]'); if (!b) return; plGoEx(+b.dataset.ex); $('#plRail').classList.remove('open'); $('#plListBtn').setAttribute('aria-expanded', 'false'); if (PL.auto) plSpeak(); });
+    $('#plListBtn').onclick = () => { const o = $('#plRail').classList.toggle('open'); $('#plListBtn').setAttribute('aria-expanded', String(o)); };
+    $('#plRestart').onclick = () => { PL.classSec = 0; store.set('pl.sec.' + c.id, 0); $('#plClock').textContent = '00:00'; plGoEx(0); $('#plRail').classList.remove('open'); if (PL.auto) plSpeak(); };
+    $('#plAuto').onclick = () => PL.auto ? plStop() : plStart();
+    $('#plNext').onclick = () => { VP.unlock(); plStep(1); };
+    $('#plPrev').onclick = () => { VP.unlock(); plStep(-1); };
+    $('#plRead').onclick = () => { VP.unlock(); plSpeak(); };
+    $('#plSkip').onclick = () => { if (PL.skip) PL.skip(); };
+    $('#plPrevEx').onclick = () => { plGoEx(PL.ex - 1); if (PL.auto) plSpeak(); };
+    $('#plNextEx').onclick = () => { plGoEx(PL.ex + 1); if (PL.auto) plSpeak(); };
+    const fsSet = d => { PL.fs = Math.max(0.95, Math.min(1.6, Math.round((PL.fs + d) * 100) / 100)); store.set('pl.fs', PL.fs); document.documentElement.style.setProperty('--plfs', PL.fs + 'rem'); };
+    $('#plFsDown').onclick = () => fsSet(-0.08); $('#plFsUp').onclick = () => fsSet(0.08);
+    $('#plRate').onchange = e => { PL.rate = parseFloat(e.target.value); store.set('pl.rate', PL.rate); };
+    $('#plGap').onchange = e => { PL.gap = parseFloat(e.target.value); store.set('pl.gap', PL.gap); };
+    $('#plRep').onchange = e => { PL.repSec = parseFloat(e.target.value); store.set('pl.repSec', PL.repSec); const keep = PL.cue; plRenderExercise(); plSetCue(keep, true); };
+    $('#plPhones').onchange = e => { PL.phones = e.target.checked; store.set('pl.phones', PL.phones); if (PL.phones && PL.auto) plPhonesOn(); if (!PL.phones && PL.media) { try { PL.media.pause(); } catch (er) {} } };
+    $$('.pl-gender [data-g]').forEach(b => b.onclick = () => {
+      VP.gender = b.dataset.g; store.set('gender', VP.gender); if (PL.auto) plStop();
+      VP.unlock(); PL.tok++; if (VP.synth) VP.synth.cancel();
+      const lg = S.lang === 'es' ? 'es' : 'en'; VP.say(I.ui.pl_sample[lg === 'es' ? 1 : 0], lg, PL.rate); plUI();
+    });
+    $('#plTest').onclick = () => { if (PL.auto) plStop(); VP.unlock(); const lg = S.lang === 'es' ? 'es' : 'en'; VP.say(I.ui.pl_sample[lg === 'es' ? 1 : 0], lg, PL.rate); plUI(); };
+  }
+  document.addEventListener('keydown', ev => {
+    if (!PL.c || /SELECT|INPUT|TEXTAREA/.test(ev.target.tagName) || ev.ctrlKey || ev.metaKey) return;
+    if (ev.key === ' ' || ev.key === 'p') { ev.preventDefault(); PL.auto ? plStop() : plStart(); }
+    else if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') { ev.preventDefault(); plStep(1); }
+    else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') { ev.preventDefault(); plStep(-1); }
+  });
+
   /* ——— Router ——— */
   function route() {
     const h = location.hash.replace(/^#\/?/, '');
@@ -840,12 +1216,13 @@ window.SLFig = (function () {
     if (a === 'props' && PROPS.includes(b)) return { name: 'prop', prop: b };
     if (APPS.includes(a)) return { name: 'app', app: a };
     if (a === 'class' && b) return { name: 'class', id: b };
+    if (a === 'play' && b) return { name: 'play', id: b };
     if (['library', 'classes', 'favs', 'glossary'].includes(a)) return { name: a };
     return { name: 'home' };
   }
   function navHTML() {
     const r = route();
-    const cur = r.name === 'class' ? 'classes' : r.name === 'prop' ? 'library' : r.name === 'app' ? r.app : r.name === 'ex' ? (byId[r.id] || {}).app : r.name;
+    const cur = (r.name === 'class' || r.name === 'play') ? 'classes' : r.name === 'prop' ? 'library' : r.name === 'app' ? r.app : r.name === 'ex' ? (byId[r.id] || {}).app : r.name;
     const tabs = [['home', 'home', 'home'], ['cadillac', 'cadillac', 'cadillac'], ['mat', 'mat', 'mat'], ['wall', 'wall', 'wall'], ['classes', 'class', 'classesShort'], ['favs', 'heart', 'favsShort']];
     $('#tabbar').innerHTML = tabs.map(([k, ic, l]) => `<a href="#/${k === 'home' ? '' : k}" ${cur === k ? 'aria-current="page"' : ''}><span class="tab-ico">${svgI(ic)}</span>${ui(l)}</a>`).join('');
     const desk = [['home', 'home'], ['cadillac', 'cadillac'], ['mat', 'matLong'], ['wall', 'wall'], ['library', 'library'], ['classes', 'classes'], ['favs', 'favs']];
@@ -854,6 +1231,8 @@ window.SLFig = (function () {
     $('#searchBtn').setAttribute('aria-label', ui('searchPh'));
   }
   function render() {
+    if (P) exit();
+    plLeave();
     closeSheet(true);
     voiceUnsub && voiceUnsub(); voiceUnsub = null; Voice.stop();
     const r = route();
@@ -866,6 +1245,7 @@ window.SLFig = (function () {
     else if (r.name === 'ex') html = viewDetail(r.id);
     else if (r.name === 'classes') html = viewClasses();
     else if (r.name === 'class') html = viewClass(r.id);
+    else if (r.name === 'play') html = viewPlay(r.id);
     else if (r.name === 'favs') html = viewFavs();
     else if (r.name === 'glossary') html = viewGlossary();
     main.innerHTML = html;
@@ -875,7 +1255,8 @@ window.SLFig = (function () {
     else if (r.name === 'ex') mountDetail(r.id);
     else if (r.name === 'classes') mountClasses();
     else if (r.name === 'class') mountClass(r.id);
-    const t = { home: ui('appName'), library: ui('library'), app: r.app && lab('app', r.app), prop: r.prop && lab('eq', r.prop), ex: r.id && byId[r.id] && tx(byId[r.id].name), classes: ui('classes'), glossary: ui('glossary'), class: r.id && clsById[r.id] && tx(clsById[r.id].title), favs: ui('favs') }[r.name];
+    else if (r.name === 'play') mountPlay(r.id);
+    const t = { home: ui('appName'), library: ui('library'), app: r.app && lab('app', r.app), prop: r.prop && lab('eq', r.prop), ex: r.id && byId[r.id] && tx(byId[r.id].name), classes: ui('classes'), glossary: ui('glossary'), class: r.id && clsById[r.id] && tx(clsById[r.id].title), play: r.id && clsById[r.id] && tx(clsById[r.id].title), favs: ui('favs') }[r.name];
     document.title = t && r.name !== 'home' ? `${t} | Springline` : 'Springline — Cadillac, Mat & Wall Unit Pilates';
   }
   let navCount = 1;
